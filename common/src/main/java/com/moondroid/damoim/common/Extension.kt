@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Parcelable
 import android.util.Log
 import androidx.annotation.Keep
-import com.moondroid.damoim.common.crashlytics.FBCrash
 import java.io.Serializable
 import java.security.MessageDigest
 
@@ -21,7 +20,6 @@ object Extension {
                 "[ ${this.javaClass.simpleName.trim()} || logException ] -> ${e.printStackTrace()}"
             )
         }
-        FBCrash.report(e)
     }
 
     @Keep

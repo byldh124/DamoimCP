@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp
+package com.moondroid.project01_meetingapp.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

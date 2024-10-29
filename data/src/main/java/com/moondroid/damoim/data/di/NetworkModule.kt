@@ -2,8 +2,6 @@ package com.moondroid.damoim.data.di
 
 import android.util.Log
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
-import com.google.gson.Strictness
 import com.moondroid.damoim.data.BuildConfig
 import com.moondroid.damoim.data.api.ApiInterface
 import com.moondroid.damoim.data.api.URLManager.BASE_URL
@@ -26,12 +24,7 @@ import org.json.JSONObject
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.UnsupportedEncodingException
 import java.lang.reflect.Type
-import java.net.URLDecoder
-import java.net.URLEncoder
-import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 import javax.inject.Singleton
 
 @Module
@@ -86,13 +79,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideConverterFactory(): GsonConverterFactory =
-        GsonConverterFactory.create(GsonBuilder().setStrictness(Strictness.LENIENT).create())
+    fun provideApiService(retrofit: Retrofit): ApiInterface = retrofit.create(ApiInterface::class.java)
 
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiInterface = retrofit.create(ApiInterface::class.java)
+    fun provideConverterFactory(): GsonConverterFactory =
+        GsonConverterFactory.create(GsonBuilder().setLenient().create())
 
     /**
      * 비어있는(length=0)인 Response를 받았을 경우 처리
