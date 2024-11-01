@@ -19,6 +19,7 @@ hilt = "2.49"
 kakao = "2.13.0"
 crashlytice-plugin = "3.0.2"
 google-service = "4.4.2"
+hilt-navigation = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,9 +52,13 @@ credentials-auth = { module = "androidx.credentials:credentials-play-services-au
 credentials = { module = "androidx.credentials:credentials", version.ref = "credential-manager" }
 google-id = "com.google.android.libraries.identity.googleid:googleid:1.1.1"
 
+# coil
+coil-compose = "io.coil-kt:coil-compose:2.7.0"
+
 # hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation" }
 
 # retrofit
 squareup-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit2" }

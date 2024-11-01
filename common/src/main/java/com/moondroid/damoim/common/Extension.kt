@@ -43,7 +43,6 @@ object Extension {
             val temp: String = byteToString(output) + salt      // 패스워드와 Salt 를 합쳐 새로운 문자열 생성
             md.update(temp.toByteArray(Charsets.UTF_8))        // temp 의 문자열을 해싱하여 md 에 저장해둔다
             output = md.digest()                                // md 객체의 다이제스트를 얻어 password 를 갱신한다
-            debug("output[$i] : ${byteToString(output)}")
         }
 
         return byteToString(output)

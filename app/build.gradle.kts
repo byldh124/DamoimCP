@@ -7,11 +7,14 @@ plugins {
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.android.kotlin.ksp)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.android.kotlin.parcelize)
 }
 
 val properties = gradleLocalProperties(rootDir, providers)
 val naverClientId: String = properties.getProperty("naver.client.id")
 val kakaoClientId: String = properties.getProperty("kakao.client.id")
+val googleCredentialServerId: String = properties.getProperty("google.credential.server.id")
 
 android {
     namespace = "com.moondroid.project01_meetingapp"
@@ -34,6 +37,7 @@ android {
             isMinifyEnabled = false
             resValue("string", "naver_client_id", naverClientId)
             resValue("string", "kakao_client_id", kakaoClientId)
+            resValue("string", "google_credential_server_id", googleCredentialServerId)
         }
 
         release {
@@ -44,15 +48,16 @@ android {
             )
             resValue("string", "naver_client_id", naverClientId)
             resValue("string", "kakao_client_id", kakaoClientId)
+            resValue("string", "google_credential_server_id", googleCredentialServerId)
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         compose = true
@@ -60,7 +65,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -77,26 +81,31 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // navigation - type safe
     implementation(libs.navigation.compose)
     implementation(libs.kotlin.serialization)
 
-    // Hilt
+    // Hilt dependency injection
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation)
     ksp(libs.hilt.compiler)
 
+    // coil image loader
+    implementation(libs.coil.compose)
+
+    // firebase
     implementation(libs.bundles.firebase)
 
     // Google - Login
     implementation(libs.bundles.google.auth)
 
-    /** Kakao **/
+    // Kakao
     implementation(libs.kakao.all) // 전체 모듈 설치, 2.11.0 버전부터 지원
 
-    /** Naver **/
+    // Naver
     implementation(libs.naver.map)
 
     implementation(libs.image.cropper)
-
 
     //Clean Architecture
     implementation((project(":common")))
