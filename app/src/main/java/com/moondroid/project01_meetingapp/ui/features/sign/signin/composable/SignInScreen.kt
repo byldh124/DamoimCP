@@ -1,7 +1,6 @@
 package com.moondroid.project01_meetingapp.ui.features.sign.signin.composable
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,10 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +34,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
-import com.kakao.sdk.template.model.Social
 import com.moondroid.project01_meetingapp.R
 import com.moondroid.project01_meetingapp.core.Destination
 import com.moondroid.project01_meetingapp.core.SignUp
@@ -141,32 +137,36 @@ fun SignInScreen(navigate: (destination: Destination, options: NavOptions?) -> U
                     }
                 })
 
+
                 Row(
-                    modifier = Modifier.padding(vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     AsyncImage(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(80.dp)
+                            .weight(1.0f)
                             .clickable {
                                 kakaoSignClient.getKakaoAccount()
                             },
-                        model = R.drawable.kakao_login,
+                        model = R.drawable.login_kakao,
                         contentDescription = "카카오 로그인"
                     )
 
+                    Spacer(modifier = Modifier.width(10.dp))
+
                     AsyncImage(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
+                            .weight(1.0f)
                             .clickable {
                                 googleSignClient.getGoogleAccount(credentialLauncher)
                             },
-                        model = R.drawable.google_login,
+
+                        model = R.drawable.login_google,
                         contentDescription = "구글 로그인"
                     )
                 }
+
 
                 Row(
                     modifier = Modifier
@@ -177,7 +177,7 @@ fun SignInScreen(navigate: (destination: Destination, options: NavOptions?) -> U
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text("아직 회원이 아니시면 ", style = Typography.bodyMedium)
+                    Text("아직 모임대장의 회원이 아니시면 ", style = Typography.bodyMedium)
                     Text("\'여기\'", style = Typography.bodyMedium, color = Red01)
                     Text("를 눌러주세요.", style = Typography.bodyMedium)
                 }

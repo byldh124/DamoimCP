@@ -31,7 +31,7 @@ object Sign : Destination
 data class SignUp(val socialSignData: SocialSignData) : Destination
 
 val SocialSignDataType = object : NavType<SocialSignData>(
-    isNullableAllowed = true
+    isNullableAllowed = false
 ) {
     override fun get(bundle: Bundle, key: String): SocialSignData? {
         return bundle.parcelable<SocialSignData>(key)
@@ -48,7 +48,6 @@ val SocialSignDataType = object : NavType<SocialSignData>(
     override fun put(bundle: Bundle, key: String, value: SocialSignData) {
         bundle.putParcelable(key, value)
     }
-
 }
 
 @Serializable

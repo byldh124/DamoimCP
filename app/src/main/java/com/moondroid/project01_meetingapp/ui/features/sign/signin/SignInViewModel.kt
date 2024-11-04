@@ -47,9 +47,9 @@ class SignInViewModel @Inject constructor(
                 val hashPw = hashingPw(pw, it)
                 signIn(id, hashPw)
             }.onFail {
-                setState { copy(concrete = SignInContract.State.Concrete.Error) }
+                setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = "로그인 실패 [$it]") }
             }.onError {
-                setState { copy(concrete = SignInContract.State.Concrete.Error) }
+                setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = it.javaClass.simpleName) }
             }
         }
     }
@@ -62,9 +62,9 @@ class SignInViewModel @Inject constructor(
                     popUpTo(Sign) { inclusive = true }
                 }))
             }.onFail {
-                setState { copy(concrete = SignInContract.State.Concrete.Error) }
+                setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = "로그인 실패 [$it]") }
             }.onError {
-                setState { copy(concrete = SignInContract.State.Concrete.Error) }
+                setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = it.javaClass.simpleName) }
             }
         }
     }

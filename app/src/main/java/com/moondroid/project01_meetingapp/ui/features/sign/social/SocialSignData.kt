@@ -7,7 +7,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 data class SocialSignData(
-    val id: String = "1",
-    val name: String = "1",
-    val thumb: String = "1"
-): Parcelable
+    val id: String = "",
+    val name: String = "",
+    val thumb: String = ""
+): Parcelable {
+    fun isEmpty() = id.isEmpty() || name.isEmpty() || thumb.isEmpty()
+}
