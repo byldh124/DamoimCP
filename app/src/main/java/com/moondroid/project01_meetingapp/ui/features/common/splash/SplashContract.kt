@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.features.splash
+package com.moondroid.project01_meetingapp.ui.features.common.splash
 
 import com.moondroid.project01_meetingapp.core.Destination
 import com.moondroid.project01_meetingapp.core.UiEffect

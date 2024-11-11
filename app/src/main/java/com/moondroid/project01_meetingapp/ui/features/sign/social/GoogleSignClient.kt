@@ -18,8 +18,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.moondroid.damoim.common.Constants.DEFAULT_PROFILE_IMG
-import com.moondroid.damoim.common.Extension.debug
-import com.moondroid.damoim.common.Extension.logException
+import com.moondroid.damoim.common.debug
+import com.moondroid.damoim.common.logException
 import com.moondroid.project01_meetingapp.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

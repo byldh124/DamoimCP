@@ -2,8 +2,9 @@ package com.moondroid.project01_meetingapp.ui.features.sign.signin
 
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.navOptions
-import com.moondroid.damoim.common.Extension.hashingPw
+import com.moondroid.damoim.common.DMRegex
 import com.moondroid.damoim.common.ResponseCode
+import com.moondroid.damoim.common.hashingPw
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
@@ -32,24 +33,47 @@ class SignInViewModel @Inject constructor(
             is SignInContract.Event.SocialSign -> signInSocial(event.socialSignData)
             is SignInContract.Event.IdChanged -> setState { copy(id = event.id) }
             is SignInContract.Event.PwChanged -> setState { copy(pw = event.pw) }
-            SignInContract.Event.Sign -> getSalt()
-            SignInContract.Event.Retry -> setState {copy(errorMessage = "", concrete = SignInContract.State.Concrete.Idle)}
+            SignInContract.Event.Sign -> checkValid()
+            SignInContract.Event.Retry -> setState {
+                copy(
+                    errorMessage = "",
+                    concrete = SignInContract.State.Concrete.Idle
+                )
+            }
         }
     }
 
-    private suspend fun getSalt() {
-        setState { copy(concrete = SignInContract.State.Concrete.Loading) }
-        delay(1000)
+    private fun checkValid() {
         val id = uiState.value.id
         val pw = uiState.value.pw
-        saltUseCase(id).collect { result ->
-            result.onSuccess {
-                val hashPw = hashingPw(pw, it)
-                signIn(id, hashPw)
-            }.onFail {
-                setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = "로그인 실패 [$it]") }
-            }.onError {
-                setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = it.javaClass.simpleName) }
+
+        if (!id.matches(DMRegex.ID)) {
+            setState { copy(errorMessage = "아이디 오류", concrete = SignInContract.State.Concrete.Error) }
+        } else if (!pw.matches(DMRegex.PW)) {
+            setState { copy(errorMessage = "비밀번호 오류", concrete = SignInContract.State.Concrete.Error) }
+        } else {
+            getSalt(id, pw)
+        }
+    }
+
+    private fun getSalt(id: String, pw: String) {
+        setState { copy(concrete = SignInContract.State.Concrete.Loading) }
+        viewModelScope.launch {
+            delay(1000)
+            saltUseCase(id).collect { result ->
+                result.onSuccess {
+                    val hashPw = hashingPw(pw, it)
+                    signIn(id, hashPw)
+                }.onFail {
+                    setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = "로그인 실패 [$it]") }
+                }.onError {
+                    setState {
+                        copy(
+                            concrete = SignInContract.State.Concrete.Error,
+                            errorMessage = it.javaClass.simpleName
+                        )
+                    }
+                }
             }
         }
     }
@@ -64,7 +88,12 @@ class SignInViewModel @Inject constructor(
             }.onFail {
                 setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = "로그인 실패 [$it]") }
             }.onError {
-                setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = it.javaClass.simpleName) }
+                setState {
+                    copy(
+                        concrete = SignInContract.State.Concrete.Error,
+                        errorMessage = it.javaClass.simpleName
+                    )
+                }
             }
         }
     }
@@ -74,7 +103,7 @@ class SignInViewModel @Inject constructor(
      * [a] 기존 데이터 o : 회원 정보 요청
      * [b] 기존 데이터 x : 회원가입 화면 전환
      */
-    fun signInSocial(socialSignData: SocialSignData) {
+    private fun signInSocial(socialSignData: SocialSignData) {
         viewModelScope.launch(Dispatchers.IO) {
             socialSignUseCase(socialSignData.id).collect { result ->
                 result.onSuccess {

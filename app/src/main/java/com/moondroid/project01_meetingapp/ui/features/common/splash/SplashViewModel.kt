@@ -1,6 +1,5 @@
-package com.moondroid.project01_meetingapp.ui.features.splash
+package com.moondroid.project01_meetingapp.ui.features.common.splash
 
-import androidx.lifecycle.viewModelScope
 import com.moondroid.damoim.common.ResponseCode
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
@@ -8,12 +7,9 @@ import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.app.CheckVersionUseCase
 import com.moondroid.damoim.domain.usecase.profile.ProfileUseCase
 import com.moondroid.project01_meetingapp.core.BaseViewModel
-import com.moondroid.project01_meetingapp.core.HomeRoot
 import com.moondroid.project01_meetingapp.core.Sign
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

@@ -9,11 +9,13 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.canhub.cropper.parcelable
+import com.moondroid.damoim.common.IntentParam
 import com.moondroid.project01_meetingapp.ui.features.home.composable.HomeRootScreen
 import com.moondroid.project01_meetingapp.ui.features.sign.signin.composable.SignInScreen
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.composable.SignUpScreen
 import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
-import com.moondroid.project01_meetingapp.ui.features.splash.composable.SplashScreen
+import com.moondroid.project01_meetingapp.ui.features.common.splash.composable.SplashScreen
+import com.moondroid.project01_meetingapp.ui.features.common.interest.composable.InterestListScreen
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -59,6 +61,9 @@ object Home : Destination
 @Serializable
 object HomeRoot : Destination
 
+@Serializable
+object InterestList: Destination
+
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
@@ -93,7 +98,9 @@ fun AppNavGraph() {
             }
             composable<SignUp>(typeMap = mapOf(typeOf<SocialSignData>() to SocialSignDataType)) { backStackEntry ->
                 val signUp: SignUp = backStackEntry.toRoute()
-                SignUpScreen(signUp.socialSignData, navigate = { d, b ->
+                val interest = backStackEntry.savedStateHandle.get<String>(IntentParam.INTEREST) ?: ""
+                val location = backStackEntry.savedStateHandle.get<String>(IntentParam.LOCATION)
+                SignUpScreen(signUp.socialSignData,interest = interest, navigate = { d, b ->
                     navController.navigate(d, b)
                 }) {
                     navController.popBackStack()
@@ -103,6 +110,10 @@ fun AppNavGraph() {
 
         navigation<Home>(startDestination = HomeRoot) {
             composable<HomeRoot> { HomeRootScreen(onAccessTokenExpired) }
+        }
+
+        composable<InterestList> {
+            InterestListScreen(navController)
         }
     }
 }

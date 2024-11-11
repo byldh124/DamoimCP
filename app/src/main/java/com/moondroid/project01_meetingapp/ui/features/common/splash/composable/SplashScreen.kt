@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.features.splash.composable
+package com.moondroid.project01_meetingapp.ui.features.common.splash.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,11 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.moondroid.damoim.common.Extension.debug
+import com.moondroid.damoim.common.debug
 import com.moondroid.project01_meetingapp.R
 import com.moondroid.project01_meetingapp.core.Destination
-import com.moondroid.project01_meetingapp.ui.features.splash.SplashContract
-import com.moondroid.project01_meetingapp.ui.features.splash.SplashViewModel
+import com.moondroid.project01_meetingapp.ui.features.common.splash.SplashContract
+import com.moondroid.project01_meetingapp.ui.features.common.splash.SplashViewModel
 import com.moondroid.project01_meetingapp.ui.theme.Red01
 import kotlinx.coroutines.launch
 

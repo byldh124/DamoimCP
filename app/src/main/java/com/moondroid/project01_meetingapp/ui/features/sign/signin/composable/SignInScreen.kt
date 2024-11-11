@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
@@ -115,7 +116,6 @@ fun SignInScreen(navigate: (destination: Destination, options: NavOptions?) -> U
                             viewModel.event.send(SignInContract.Event.IdChanged(it))
                         }
                     },
-                    title = "아이디 입력",
                     label = "아이디"
                 )
                 CustomTextField(
@@ -125,7 +125,6 @@ fun SignInScreen(navigate: (destination: Destination, options: NavOptions?) -> U
                             viewModel.event.send(SignInContract.Event.PwChanged(it))
                         }
                     },
-                    title = "비밀번호 입력",
                     label = "비밀번호",
                     visualTransformation = PasswordVisualTransformation()
                 )

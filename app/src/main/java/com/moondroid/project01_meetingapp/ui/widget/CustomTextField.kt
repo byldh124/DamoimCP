@@ -26,7 +26,6 @@ import com.moondroid.project01_meetingapp.ui.theme.Typography
 fun CustomTextField(
     value: String,
     onTextChanged: (String) -> Unit,
-    title: String? = null,
     label: String? = null,
     maxLines: Int = 1,
     maxLength: Int = Int.MAX_VALUE,
