@@ -6,8 +6,8 @@ import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.app.CheckVersionUseCase
 import com.moondroid.damoim.domain.usecase.profile.ProfileUseCase
-import com.moondroid.project01_meetingapp.core.BaseViewModel
-import com.moondroid.project01_meetingapp.core.Sign
+import com.moondroid.project01_meetingapp.core.base.BaseViewModel
+import com.moondroid.project01_meetingapp.core.navigation.Sign
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import javax.inject.Inject

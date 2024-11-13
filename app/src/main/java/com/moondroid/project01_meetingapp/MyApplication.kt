@@ -1,6 +1,7 @@
 package com.moondroid.project01_meetingapp
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.FirebaseApp
 import com.kakao.sdk.common.KakaoSdk
 import com.naver.maps.map.NaverMapSdk
@@ -10,6 +11,8 @@ import dagger.hilt.android.HiltAndroidApp
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        //다크모드 설정 X
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         // 카카오 sdk 초기화
         KakaoSdk.init(this, getString(R.string.kakao_client_id))
         // 네이버 맵 클라이언트 초기화

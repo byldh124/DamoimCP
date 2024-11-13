@@ -5,6 +5,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.moondroid.damoim.common.Constants.DEFAULT_PROFILE_IMG
 
 class KakaoSignClient(
     private val context: Context,
@@ -52,8 +53,8 @@ class KakaoSignClient(
                 user?.let {
                     val id = it.id?.toString() ?: throw IllegalStateException("ID must not be null")
                     val name = it.kakaoAccount?.profile?.nickname ?: ""
-                    val thumb = it.kakaoAccount?.profile?.profileImageUrl ?: ""
-                    socialSignEventListener.onSuccess(SocialSignData(id, name, thumb))
+                    val thumb = it.kakaoAccount?.profile?.profileImageUrl ?: DEFAULT_PROFILE_IMG
+                    socialSignEventListener.onSuccess(SocialSignData(id, name, thumb.replace("/", "\\")))
                 } ?: run {
                     //showMessage(getString(R.string.error_kakao_user_info))
                 }

@@ -9,9 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavOptions
+import com.moondroid.project01_meetingapp.core.navigation.Destination
 
 @Composable
-fun HomeRootScreen(onAccessTokenExpired: (() -> Unit) -> Unit) {
+fun HomeRootScreen(onAccessTokenExpired: (() -> Unit) -> Unit, navigate: (Destination, NavOptions?) -> Unit) {
     val mContext = LocalContext.current
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Button({

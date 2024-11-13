@@ -14,6 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,14 +34,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavOptions
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.moondroid.project01_meetingapp.R
-import com.moondroid.project01_meetingapp.core.Destination
-import com.moondroid.project01_meetingapp.core.SignUp
+import com.moondroid.project01_meetingapp.core.navigation.HomeRoot
+import com.moondroid.project01_meetingapp.core.navigation.Sign
+import com.moondroid.project01_meetingapp.core.navigation.SignUp
 import com.moondroid.project01_meetingapp.ui.features.sign.signin.SignInContract
 import com.moondroid.project01_meetingapp.ui.features.sign.signin.SignInViewModel
 import com.moondroid.project01_meetingapp.ui.features.sign.social.GoogleSignClient
@@ -51,7 +55,7 @@ import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignInScreen(navigate: (destination: Destination, options: NavOptions?) -> Unit) {
+fun SignInScreen(navController: NavController) {
     val mContext = LocalContext.current
     val scope = rememberCoroutineScope()
     val viewModel = hiltViewModel<SignInViewModel>()
@@ -82,7 +86,15 @@ fun SignInScreen(navigate: (destination: Destination, options: NavOptions?) -> U
     LaunchedEffect(viewModel) {
         viewModel.effect.collect {
             when (it) {
-                is SignInContract.Effect.Navigate -> navigate(it.destination, it.navOptions)
+                is SignInContract.Effect.NavigateToSignUp -> {
+                    navController.navigate(SignUp(it.socialSignData))
+                }
+
+                SignInContract.Effect.NavigateToHome -> {
+                    navController.navigate(HomeRoot) {
+                        popUpTo(Sign) { inclusive = true }
+                    }
+                }
             }
         }
     }
@@ -138,7 +150,8 @@ fun SignInScreen(navigate: (destination: Destination, options: NavOptions?) -> U
 
 
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(vertical = 20.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
@@ -165,12 +178,12 @@ fun SignInScreen(navigate: (destination: Destination, options: NavOptions?) -> U
                         contentDescription = "구글 로그인"
                     )
                 }
-
-
                 Row(
                     modifier = Modifier
                         .clickable {
-                            navigate(SignUp(SocialSignData()), null)
+                            navController.navigate(
+                                SignUp(SocialSignData())
+                            )
                         }
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -194,7 +207,27 @@ fun SignInScreen(navigate: (destination: Destination, options: NavOptions?) -> U
                         viewModel.event.send(SignInContract.Event.Retry)
                     }
                 }) {
-                    Text("에러 : ${uiState.errorMessage}")
+                    Card(
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White)
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(vertical = 40.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("에러 : ${uiState.errorMessage}")
+                            Spacer(Modifier.height(5.dp))
+                            Button({
+                                scope.launch {
+                                    viewModel.event.send(SignInContract.Event.Retry)
+                                }
+                            }) {
+                                Text("재시도")
+                            }
+                        }
+                    }
                 }
             }
         }

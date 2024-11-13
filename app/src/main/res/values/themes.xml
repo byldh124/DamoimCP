@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.DamoimCP" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- 기본 스플래시 화면 제거 -->
         <item name="android:windowIsTranslucent">true</item>
+
         <item name="android:windowBackground">@color/white</item>
     </style>
 </resources>

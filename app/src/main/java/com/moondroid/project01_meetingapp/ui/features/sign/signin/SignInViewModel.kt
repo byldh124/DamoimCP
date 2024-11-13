@@ -1,7 +1,6 @@
 package com.moondroid.project01_meetingapp.ui.features.sign.signin
 
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.navOptions
 import com.moondroid.damoim.common.DMRegex
 import com.moondroid.damoim.common.ResponseCode
 import com.moondroid.damoim.common.hashingPw
@@ -11,10 +10,7 @@ import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.sign.SaltUseCase
 import com.moondroid.damoim.domain.usecase.sign.SignInUseCase
 import com.moondroid.damoim.domain.usecase.sign.SocialSignUseCase
-import com.moondroid.project01_meetingapp.core.BaseViewModel
-import com.moondroid.project01_meetingapp.core.Home
-import com.moondroid.project01_meetingapp.core.Sign
-import com.moondroid.project01_meetingapp.core.SignUp
+import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -82,9 +78,7 @@ class SignInViewModel @Inject constructor(
         signInUseCase(id, pw).collect { result ->
             setState { copy(concrete = SignInContract.State.Concrete.Loading) }
             result.onSuccess {
-                setEffect(SignInContract.Effect.Navigate(Home, navOptions {
-                    popUpTo(Sign) { inclusive = true }
-                }))
+                setEffect(SignInContract.Effect.NavigateToHome)
             }.onFail {
                 setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = "로그인 실패 [$it]") }
             }.onError {
@@ -107,12 +101,10 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             socialSignUseCase(socialSignData.id).collect { result ->
                 result.onSuccess {
-                    setEffect(SignInContract.Effect.Navigate(Home, navOptions {
-                        popUpTo(Sign) { inclusive = true }
-                    }))
+                    setEffect(SignInContract.Effect.NavigateToHome)
                 }.onFail {
                     if (it == ResponseCode.NOT_EXIST) {
-                        setEffect(SignInContract.Effect.Navigate(SignUp(socialSignData), null))
+                        setEffect(SignInContract.Effect.NavigateToSignUp(socialSignData))
                     }
                 }
             }

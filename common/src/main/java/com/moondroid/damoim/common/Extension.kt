@@ -2,6 +2,7 @@ package com.moondroid.damoim.common
 
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import androidx.annotation.Keep
@@ -9,7 +10,7 @@ import java.io.Serializable
 import java.security.MessageDigest
 
 fun Any.debug(msg: String) {
-    if (BuildConfig.DEBUG) Log.e("Damoim", "[${this.javaClass.simpleName.trim()}] | $msg")
+    if (BuildConfig.DEBUG) Log.e("Damoim", "[${simpleName()}] | $msg")
 }
 
 fun debug(msg: String) {
@@ -20,7 +21,7 @@ fun Any.logException(e: Throwable) {
     if (BuildConfig.DEBUG) {
         Log.e(
             "Damoim",
-            "[ ${this.javaClass.simpleName.trim()} || logException ] -> ${e.printStackTrace()}"
+            "[ ${simpleName()} || logException ] -> ${e.printStackTrace()}"
         )
     }
 }
@@ -28,16 +29,11 @@ fun Any.logException(e: Throwable) {
 fun Any.simpleName() = javaClass.simpleName.trim()
 
 @Keep
-inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
-    Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
-    else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
+    Build.VERSION.SDK_INT >= 33 -> this.getParcelable(key, T::class.java)
+    else -> @Suppress("DEPRECATION") this.getParcelable(key) as? T
 }
 
-@Keep
-inline fun <reified T : Serializable> Intent.serializable(key: String): T? = when {
-    Build.VERSION.SDK_INT >= 33 -> getSerializableExtra(key, T::class.java)
-    else -> @Suppress("DEPRECATION") getSerializableExtra(key) as? T
-}
 
 fun hashingPw(password: String, salt: String): String {
     val md: MessageDigest = MessageDigest.getInstance("SHA-256")  // SHA-256 해시함수를 사용

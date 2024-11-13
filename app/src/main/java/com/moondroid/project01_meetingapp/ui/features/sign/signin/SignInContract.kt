@@ -1,10 +1,8 @@
 package com.moondroid.project01_meetingapp.ui.features.sign.signin
 
-import androidx.navigation.NavOptions
-import com.moondroid.project01_meetingapp.core.Destination
-import com.moondroid.project01_meetingapp.core.UiEffect
-import com.moondroid.project01_meetingapp.core.UiEvent
-import com.moondroid.project01_meetingapp.core.UiState
+import com.moondroid.project01_meetingapp.core.base.UiEffect
+import com.moondroid.project01_meetingapp.core.base.UiEvent
+import com.moondroid.project01_meetingapp.core.base.UiState
 import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 
 class SignInContract {
@@ -28,6 +26,7 @@ class SignInContract {
     }
 
     sealed interface Effect : UiEffect {
-        data class Navigate(val destination: Destination, val navOptions: NavOptions? = null) : Effect
+        data object NavigateToHome : Effect
+        data class NavigateToSignUp(val socialSignData: SocialSignData) : Effect
     }
 }

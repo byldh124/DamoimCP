@@ -12,8 +12,8 @@ import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.profile.UpdateTokenUseCase
 import com.moondroid.damoim.domain.usecase.sign.SignUpUseCase
-import com.moondroid.project01_meetingapp.core.BaseViewModel
-import com.moondroid.project01_meetingapp.core.HomeRoot
+import com.moondroid.project01_meetingapp.core.base.BaseViewModel
+import com.moondroid.project01_meetingapp.core.navigation.HomeRoot
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract.Effect
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract.Event
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract.State
@@ -36,10 +36,9 @@ class SignUpViewModel @Inject constructor(
             is Event.PutName -> setState { copy(name = event.name) }
             is Event.PutBirth -> setState { copy(birth = event.birth) }
             is Event.PutGender -> setState { copy(gender = event.gender) }
-            is Event.PutInterest -> setState { copy(interest = event.interest) }
-            is Event.PutLocation -> setState { copy(location = event.location) }
             is Event.PutPolicyAgree -> setState { copy(policyAgree = event.policyAgree) }
-            Event.SignUp -> checkValidation()
+            is Event.SignUp -> checkValidation()
+            Event.Retry -> setState{copy(errorMessage = "", concrete = State.Concrete.Idle)}
         }
     }
 

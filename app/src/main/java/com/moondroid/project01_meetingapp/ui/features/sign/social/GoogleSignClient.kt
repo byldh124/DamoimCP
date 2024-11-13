@@ -74,7 +74,6 @@ class GoogleSignClient(private val context: Context, private val socialSignEvent
 
     private suspend fun handleSignIn(result: GetCredentialResponse) {
         val credential = result.credential
-        debug("credential : ${credential.javaClass.simpleName}}")
         when (credential) {
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
@@ -97,7 +96,7 @@ class GoogleSignClient(private val context: Context, private val socialSignEvent
                             val name = it.displayName.toString()
                             val thumb = it.photoUrl?.toString() ?: DEFAULT_PROFILE_IMG
 
-                            socialSignEventListener.onSuccess(SocialSignData(id, name, thumb))
+                            socialSignEventListener.onSuccess(SocialSignData(id, name, thumb.replace("/", "\\")))
                         }
                     } catch (e: GoogleIdTokenParsingException) {
                         logException(e)

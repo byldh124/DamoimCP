@@ -1,10 +1,12 @@
 package com.moondroid.project01_meetingapp.ui.widget
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.moondroid.project01_meetingapp.ui.theme.Gray03
 import com.moondroid.project01_meetingapp.ui.theme.Red01
+import com.moondroid.project01_meetingapp.ui.theme.Red03
 import com.moondroid.project01_meetingapp.ui.theme.Typography
 
 @Composable
@@ -33,7 +36,7 @@ fun CustomTextField(
 ) {
     var fieldValue by remember { mutableStateOf(value) }
     val focusManager = LocalFocusManager.current
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 5.dp)
@@ -66,6 +69,10 @@ fun CustomTextField(
                 cursorColor = Red01,
                 focusedIndicatorColor = Red01,
                 focusedLabelColor = Red01,
+                textSelectionColors = TextSelectionColors(
+                    handleColor = Red01,
+                    backgroundColor = Red03
+                ),
                 unfocusedIndicatorColor = Gray03,
                 unfocusedLabelColor = Gray03,
             )
