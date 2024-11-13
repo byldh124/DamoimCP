@@ -8,6 +8,15 @@ interface Destination
 @Serializable
 object Splash : Destination
 
+@Serializable
+object InterestList : Destination
+
+
+@Serializable
+object LocationList : Destination
+
+
+
 
 @Serializable
 object Sign : Destination
@@ -24,6 +33,3 @@ object Home : Destination
 
 @Serializable
 object HomeRoot : Destination
-
-@Serializable
-object InterestList : Destination

@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.moondroid.damoim.common.IntentParam
 import com.moondroid.project01_meetingapp.ui.features.common.interest.composable.InterestListScreen
+import com.moondroid.project01_meetingapp.ui.features.common.location.composable.LocationListScreen
 import com.moondroid.project01_meetingapp.ui.features.common.splash.composable.SplashScreen
 import com.moondroid.project01_meetingapp.ui.features.home.composable.HomeRootScreen
 import com.moondroid.project01_meetingapp.ui.features.home.composable.pager.GroupListScreen
@@ -44,6 +45,14 @@ fun AppNavGraph() {
             })
         }
 
+        composable<InterestList> {
+            InterestListScreen(navController)
+        }
+
+        composable<LocationList> {
+            LocationListScreen(navController)
+        }
+
         navigation<Sign>(startDestination = SignIn::class) {
             composable<SignIn> {
                 SignInScreen(navController = navController)
@@ -75,10 +84,6 @@ fun AppNavGraph() {
                     }
                 )
             }
-        }
-
-        composable<InterestList> {
-            InterestListScreen(navController)
         }
     }
 }

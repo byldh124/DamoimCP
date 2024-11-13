@@ -14,9 +14,14 @@ val Red01 = Color(0xfff7313e)
 val Red02 = Color(0xfffb5762)
 val Red03 = Color(0xfff8949b)
 
+val Blue01 = Color(0xFF007AFF)
+val Blue02 = Color(0xfff8949b)
+val Blue03 = Color(0xfff8949b)
+
 val Gray01 = Color(0xff323232)
 val Gray02 = Color(0xff404040)
 val Gray03 = Color(0xff595959)
+val Gray04 = Color(0xFF8D8D8D)
 val White01 = Color(0xfff2f2f2)
 
 val Pastel01 = Color(0xff8DA0FB)

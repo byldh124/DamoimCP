@@ -50,7 +50,9 @@ import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignEventListener
 import com.moondroid.project01_meetingapp.ui.theme.Red01
 import com.moondroid.project01_meetingapp.ui.theme.Typography
+import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
 import com.moondroid.project01_meetingapp.ui.widget.CustomButton
+import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
 import kotlinx.coroutines.launch
 
@@ -99,137 +101,105 @@ fun SignInScreen(navController: NavController) {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = { CenterAlignedTopAppBar(title = { Text("로그인") }) }
-    ) { innerPadding ->
-        Box(
+    BaseLayout(title = "로그인") {
+        Column(
             modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
+                .padding(20.dp)
+                .fillMaxWidth()
         ) {
-            Column(
+            Text("모임대장에서 새로운 모임을 시작하세요.", style = Typography.bodyMedium)
+            AsyncImage(
+                modifier = Modifier.weight(1.0f),
+                model = R.drawable.image_login,
+                contentDescription = "로그인 화면"
+            )
+            Text("이미 모임대장의 회원이신가요?", style = Typography.bodyMedium)
+            CustomTextField(
+                value = uiState.id,
+                onTextChanged = {
+                    scope.launch {
+                        viewModel.event.send(SignInContract.Event.IdChanged(it))
+                    }
+                },
+                label = "아이디"
+            )
+            CustomTextField(
+                value = uiState.pw,
+                onTextChanged = {
+                    scope.launch {
+                        viewModel.event.send(SignInContract.Event.PwChanged(it))
+                    }
+                },
+                label = "비밀번호",
+                visualTransformation = PasswordVisualTransformation()
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+
+            CustomButton("로그인하기", onClick = {
+                scope.launch {
+                    viewModel.event.send(SignInContract.Event.Sign)
+                }
+            })
+
+
+            Row(
                 modifier = Modifier
-                    .padding(20.dp)
                     .fillMaxWidth()
+                    .padding(vertical = 20.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text("모임대장에서 새로운 모임을 시작하세요.", style = Typography.bodyMedium)
                 AsyncImage(
-                    modifier = Modifier.weight(1.0f),
-                    model = R.drawable.image_login,
-                    contentDescription = "로그인 화면"
-                )
-                Text("이미 모임대장의 회원이신가요?", style = Typography.bodyMedium)
-                CustomTextField(
-                    value = uiState.id,
-                    onTextChanged = {
-                        scope.launch {
-                            viewModel.event.send(SignInContract.Event.IdChanged(it))
-                        }
-                    },
-                    label = "아이디"
-                )
-                CustomTextField(
-                    value = uiState.pw,
-                    onTextChanged = {
-                        scope.launch {
-                            viewModel.event.send(SignInContract.Event.PwChanged(it))
-                        }
-                    },
-                    label = "비밀번호",
-                    visualTransformation = PasswordVisualTransformation()
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-
-                CustomButton("로그인하기", onClick = {
-                    scope.launch {
-                        viewModel.event.send(SignInContract.Event.Sign)
-                    }
-                })
-
-
-                Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 20.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .weight(1.0f)
-                            .clickable {
-                                kakaoSignClient.getKakaoAccount()
-                            },
-                        model = R.drawable.login_kakao,
-                        contentDescription = "카카오 로그인"
-                    )
-
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    AsyncImage(
-                        modifier = Modifier
-                            .weight(1.0f)
-                            .clickable {
-                                googleSignClient.getGoogleAccount(credentialLauncher)
-                            },
-
-                        model = R.drawable.login_google,
-                        contentDescription = "구글 로그인"
-                    )
-                }
-                Row(
-                    modifier = Modifier
+                        .weight(1.0f)
                         .clickable {
-                            navController.navigate(
-                                SignUp(SocialSignData())
-                            )
-                        }
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text("아직 모임대장의 회원이 아니시면 ", style = Typography.bodyMedium)
-                    Text("\'여기\'", style = Typography.bodyMedium, color = Red01)
-                    Text("를 눌러주세요.", style = Typography.bodyMedium)
-                }
-            }
+                            kakaoSignClient.getKakaoAccount()
+                        },
+                    model = R.drawable.login_kakao,
+                    contentDescription = "카카오 로그인"
+                )
 
-            if (uiState.concrete == SignInContract.State.Concrete.Loading) {
-                Dialog({}) {
-                    CircularProgressIndicator(color = Color.White)
-                }
-            }
+                Spacer(modifier = Modifier.width(10.dp))
 
-            if (uiState.concrete == SignInContract.State.Concrete.Error) {
-                Dialog({
-                    scope.launch {
-                        viewModel.event.send(SignInContract.Event.Retry)
-                    }
-                }) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(0.8f),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White)
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(vertical = 40.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text("에러 : ${uiState.errorMessage}")
-                            Spacer(Modifier.height(5.dp))
-                            Button({
-                                scope.launch {
-                                    viewModel.event.send(SignInContract.Event.Retry)
-                                }
-                            }) {
-                                Text("재시도")
-                            }
-                        }
-                    }
-                }
+                AsyncImage(
+                    modifier = Modifier
+                        .weight(1.0f)
+                        .clickable {
+                            googleSignClient.getGoogleAccount(credentialLauncher)
+                        },
+
+                    model = R.drawable.login_google,
+                    contentDescription = "구글 로그인"
+                )
             }
+            Row(
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate(
+                            SignUp(SocialSignData())
+                        )
+                    }
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text("아직 모임대장의 회원이 아니시면 ", style = Typography.bodyMedium)
+                Text("\'여기\'", style = Typography.bodyMedium, color = Red01)
+                Text("를 눌러주세요.", style = Typography.bodyMedium)
+            }
+        }
+
+        if (uiState.concrete == SignInContract.State.Concrete.Loading) {
+            Dialog({}) {
+                CircularProgressIndicator(color = Color.White)
+            }
+        }
+
+        if (uiState.concrete == SignInContract.State.Concrete.Error) {
+            CustomDialog({
+                scope.launch {
+                    viewModel.event.send(SignInContract.Event.Retry)
+                }
+            }, uiState.errorMessage, "에러", "재시도")
         }
     }
 }
