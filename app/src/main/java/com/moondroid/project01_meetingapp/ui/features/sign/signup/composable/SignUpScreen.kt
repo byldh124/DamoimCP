@@ -4,17 +4,25 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -29,11 +37,14 @@ import com.moondroid.project01_meetingapp.core.navigation.LocationList
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpViewModel
 import com.moondroid.project01_meetingapp.ui.theme.Gray03
+import com.moondroid.project01_meetingapp.ui.theme.Red01
 import com.moondroid.project01_meetingapp.ui.theme.Typography
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
 import com.moondroid.project01_meetingapp.ui.widget.CustomButton
 import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
+import com.moondroid.project01_meetingapp.ui.widget.DatePickerModal
+import com.moondroid.project01_meetingapp.ui.widget.GenderRadioButton
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -50,6 +61,7 @@ fun SignUpScreen(
     val isSocialSign by viewModel.isSocialSign.collectAsStateWithLifecycle()
     val interest by interestFlow.collectAsStateWithLifecycle()
     val location by locationFlow.collectAsStateWithLifecycle()
+    var showDateModal by remember { mutableStateOf(false) }
 
     LaunchedEffect(interest, location) {
         viewModel.event.send(SignUpContract.Event.PutLocation(location))
@@ -68,7 +80,18 @@ fun SignUpScreen(
         title = "회원가입",
         onBack = navigateUp
     ) {
-        SignUpContent(viewModel, uiState, isSocialSign, navigate)
+        SignUpContent(viewModel, uiState, isSocialSign, navigate, onDatePickerClick = { showDateModal = true })
+
+        if (showDateModal) {
+            DatePickerModal(uiState.birth, {
+                scope.launch {
+                    viewModel.event.send(SignUpContract.Event.PutBirth(it))
+                }
+            }) {
+                showDateModal = false
+            }
+        }
+
 
         if (uiState.concrete == SignUpContract.State.Concrete.Loading) {
             Dialog({}) {
@@ -92,6 +115,7 @@ fun SignUpContent(
     uiState: SignUpContract.State,
     isSocialSign: Boolean,
     navigate: (Destination, NavOptions?) -> Unit,
+    onDatePickerClick: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -141,16 +165,38 @@ fun SignUpContent(
             )
         }
 
-        CustomText(uiState.birth.ifEmpty { "생년월일" }) {
+        GenderRadioButton(uiState.gender) {
+            scope.launch {
+                viewModel.event.send(SignUpContract.Event.PutGender(it))
+            }
+        }
 
+        CustomText(uiState.birth.ifEmpty { "생년월일" }) {
+            onDatePickerClick()
         }
 
         CustomText(uiState.location.ifEmpty { "관심지역" }) {
             navigate(LocationList, null)
         }
 
-        CustomText(uiState.location.ifEmpty { "관심사" }) {
+        CustomText(uiState.interest.ifEmpty { "관심사" }) {
             navigate(InterestList, null)
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                uiState.policyAgree, onCheckedChange = {
+                    scope.launch {
+                        viewModel.event.send(SignUpContract.Event.PutPolicyAgree(it))
+                    }
+                }, colors = CheckboxDefaults.colors(
+                    uncheckedColor = Red01,
+                    checkedColor = Red01
+                )
+            )
+            Text("이용약관 및 개인정보 처리방침에 동의해주세요.")
         }
 
         Spacer(Modifier.height(20.dp))

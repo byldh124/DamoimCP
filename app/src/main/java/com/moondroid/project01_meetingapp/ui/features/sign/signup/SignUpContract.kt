@@ -13,7 +13,7 @@ class SignUpContract {
         val pw: String = "",
         val confirmPw: String = "",
         val name: String = "",
-        val gender: String = "",
+        val gender: String = "남자",
         val thumb: String = DEFAULT_PROFILE_IMG,
         val birth: String = "",
         val location: String = "",
