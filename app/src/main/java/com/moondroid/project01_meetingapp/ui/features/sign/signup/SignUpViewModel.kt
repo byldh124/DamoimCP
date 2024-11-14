@@ -1,10 +1,13 @@
 package com.moondroid.project01_meetingapp.ui.features.sign.signup
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.moondroid.damoim.common.DMRegex
 import com.moondroid.damoim.common.byteToString
+import com.moondroid.damoim.common.debug
 import com.moondroid.damoim.common.hashingPw
 import com.moondroid.damoim.common.simpleName
 import com.moondroid.damoim.domain.model.status.onError
@@ -14,19 +17,38 @@ import com.moondroid.damoim.domain.usecase.profile.UpdateTokenUseCase
 import com.moondroid.damoim.domain.usecase.sign.SignUpUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import com.moondroid.project01_meetingapp.core.navigation.HomeRoot
+import com.moondroid.project01_meetingapp.core.navigation.SignUp
+import com.moondroid.project01_meetingapp.core.navigation.SocialSignDataType
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract.Effect
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract.Event
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract.State
+import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.security.SecureRandom
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val updateTokenUseCase: UpdateTokenUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<State, Event, Effect>(State()) {
+
+    private val _isSocialSign = MutableStateFlow(false)
+    val isSocialSign = _isSocialSign.asStateFlow()
+
+    init {
+        val data = savedStateHandle.toRoute<SignUp>(typeMap = mapOf(typeOf<SocialSignData>() to SocialSignDataType)).socialSignData
+        if (!data.isEmpty()) {
+            setState { copy(id = data.id, pw = data.id, confirmPw = data.id, thumb = data.thumb, name = data.name) }
+        }
+        _isSocialSign.value = !data.isEmpty()
+    }
+
     override suspend fun handleEvent(event: Event) {
         when (event) {
             is Event.PutId -> setState { copy(id = event.id) }
@@ -36,9 +58,11 @@ class SignUpViewModel @Inject constructor(
             is Event.PutName -> setState { copy(name = event.name) }
             is Event.PutBirth -> setState { copy(birth = event.birth) }
             is Event.PutGender -> setState { copy(gender = event.gender) }
+            is Event.PutInterest -> setState { copy(interest = event.interest) }
+            is Event.PutLocation -> setState { copy(location = event.location) }
             is Event.PutPolicyAgree -> setState { copy(policyAgree = event.policyAgree) }
             is Event.SignUp -> checkValidation()
-            Event.Retry -> setState{copy(errorMessage = "", concrete = State.Concrete.Idle)}
+            Event.Retry -> setState { copy(errorMessage = "", concrete = State.Concrete.Idle) }
         }
     }
 
@@ -54,15 +78,15 @@ class SignUpViewModel @Inject constructor(
         val location = uiState.value.location
         val policyAgree = uiState.value.policyAgree
 
-        setState { copy(concrete = State.Concrete.Loading)}
+        setState { copy(concrete = State.Concrete.Loading) }
 
-        if (!id.matches(DMRegex.ID)) {
+        if (!_isSocialSign.value && !id.matches(DMRegex.ID)) {
             setState { copy(errorMessage = "아이디 에러", concrete = State.Concrete.Error) }
-        } else if (!pw.matches(DMRegex.PW)) {
+        } else if (!_isSocialSign.value && !pw.matches(DMRegex.PW)) {
             setState { copy(errorMessage = "비밀번호 에러", concrete = State.Concrete.Error) }
         } else if (pw != confirmPw) {
             setState { copy(errorMessage = "비밀번호 다름", concrete = State.Concrete.Error) }
-        } else if (name.isEmpty()) {
+        } else if (!_isSocialSign.value && name.isEmpty()) {
             setState { copy(errorMessage = "이름을 입력해주세요.", concrete = State.Concrete.Error) }
         } else if (interest.isEmpty()) {
             setState { copy(errorMessage = "관심사를 선택해주세요.", concrete = State.Concrete.Error) }
@@ -73,7 +97,7 @@ class SignUpViewModel @Inject constructor(
         } else {
             val salt = getSalt()
             val hashPw = hashingPw(pw, salt)
-            signup(id,hashPw, salt, name, birth, gender, location, interest, thumb)
+            signup(id, hashPw, salt, name, birth, gender, location, interest, thumb)
         }
     }
 

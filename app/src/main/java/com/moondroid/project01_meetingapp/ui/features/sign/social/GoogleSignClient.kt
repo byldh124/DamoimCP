@@ -96,7 +96,7 @@ class GoogleSignClient(private val context: Context, private val socialSignEvent
                             val name = it.displayName.toString()
                             val thumb = it.photoUrl?.toString() ?: DEFAULT_PROFILE_IMG
 
-                            socialSignEventListener.onSuccess(SocialSignData(id, name, thumb.replace("/", "\\")))
+                            socialSignEventListener.onSuccess(SocialSignData(id, name, thumb))
                         }
                     } catch (e: GoogleIdTokenParsingException) {
                         logException(e)

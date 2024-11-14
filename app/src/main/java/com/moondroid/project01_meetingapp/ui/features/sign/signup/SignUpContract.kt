@@ -35,8 +35,10 @@ class SignUpContract {
         data class PutGender(val gender: String) : Event
         data class PutThumb(val thumb: String) : Event
         data class PutBirth(val birth: String) : Event
+        data class PutLocation(val location: String) : Event
+        data class PutInterest(val interest: String) : Event
         data class PutPolicyAgree(val policyAgree: Boolean) : Event
-        data class SignUp(val location: String, val interest: String): Event
+        data object SignUp: Event
         data object Retry: Event
     }
 

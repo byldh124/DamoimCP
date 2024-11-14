@@ -36,6 +36,13 @@ class SignInViewModel @Inject constructor(
                     concrete = SignInContract.State.Concrete.Idle
                 )
             }
+
+            is SignInContract.Event.SocialSignFail -> setState {
+                copy(
+                    errorMessage = "소셜 로그인 실패",
+                    concrete = SignInContract.State.Concrete.Error
+                )
+            }
         }
     }
 

@@ -23,6 +23,7 @@ class SignInContract {
         data object Sign: Event
         data object Retry: Event
         data class SocialSign(val socialSignData: SocialSignData) : Event
+        data class SocialSignFail(val throwable: Throwable) : Event
     }
 
     sealed interface Effect : UiEffect {

@@ -54,7 +54,7 @@ class KakaoSignClient(
                     val id = it.id?.toString() ?: throw IllegalStateException("ID must not be null")
                     val name = it.kakaoAccount?.profile?.nickname ?: ""
                     val thumb = it.kakaoAccount?.profile?.profileImageUrl ?: DEFAULT_PROFILE_IMG
-                    socialSignEventListener.onSuccess(SocialSignData(id, name, thumb.replace("/", "\\")))
+                    socialSignEventListener.onSuccess(SocialSignData(id, name, thumb))
                 } ?: run {
                     //showMessage(getString(R.string.error_kakao_user_info))
                 }

@@ -28,32 +28,47 @@ import com.moondroid.project01_meetingapp.core.navigation.InterestList
 import com.moondroid.project01_meetingapp.core.navigation.LocationList
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpViewModel
-import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 import com.moondroid.project01_meetingapp.ui.theme.Gray03
 import com.moondroid.project01_meetingapp.ui.theme.Typography
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
 import com.moondroid.project01_meetingapp.ui.widget.CustomButton
 import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
-    socialSignData: SocialSignData,
-    interest: String = "",
-    location: String = "",
+    interestFlow: StateFlow<String>,
+    locationFlow: StateFlow<String>,
     navigate: (Destination, NavOptions?) -> Unit,
     navigateUp: () -> Unit,
 ) {
     val viewModel: SignUpViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isSocialSign by viewModel.isSocialSign.collectAsStateWithLifecycle()
+    val interest by interestFlow.collectAsStateWithLifecycle()
+    val location by locationFlow.collectAsStateWithLifecycle()
+
+    LaunchedEffect(interest, location) {
+        viewModel.event.send(SignUpContract.Event.PutLocation(location))
+        viewModel.event.send(SignUpContract.Event.PutInterest(interest))
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.effect.collect {
+            when (it) {
+                is SignUpContract.Effect.Navigate -> navigate(it.destination, it.navOptions)
+            }
+        }
+    }
 
     BaseLayout(
         title = "회원가입",
         onBack = navigateUp
     ) {
-        SignUpContent(viewModel, uiState, socialSignData, interest, location, navigate)
+        SignUpContent(viewModel, uiState, isSocialSign, navigate)
 
         if (uiState.concrete == SignUpContract.State.Concrete.Loading) {
             Dialog({}) {
@@ -75,32 +90,13 @@ fun SignUpScreen(
 fun SignUpContent(
     viewModel: SignUpViewModel,
     uiState: SignUpContract.State,
-    socialSignData: SocialSignData,
-    interest: String,
-    location: String,
+    isSocialSign: Boolean,
     navigate: (Destination, NavOptions?) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(viewModel) {
-        viewModel.effect.collect {
-            when (it) {
-                is SignUpContract.Effect.Navigate -> navigate(it.destination, it.navOptions)
-            }
-        }
-
-        if (!socialSignData.isEmpty()) {
-            viewModel.event.send(SignUpContract.Event.PutId(socialSignData.id))
-            viewModel.event.send(SignUpContract.Event.PutPw(socialSignData.id))
-            viewModel.event.send(SignUpContract.Event.PutConfirmPw(socialSignData.id))
-            viewModel.event.send(SignUpContract.Event.PutName(socialSignData.name))
-            viewModel.event.send(SignUpContract.Event.PutThumb(socialSignData.thumb))
-        }
-    }
-
-
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-        if (socialSignData.isEmpty()) {
+        if (!isSocialSign) {
             CustomTextField(
                 uiState.id,
                 onTextChanged = {
@@ -149,11 +145,11 @@ fun SignUpContent(
 
         }
 
-        CustomText(location.ifEmpty { "관심지역" }) {
+        CustomText(uiState.location.ifEmpty { "관심지역" }) {
             navigate(LocationList, null)
         }
 
-        CustomText(interest.ifEmpty { "관심사" }) {
+        CustomText(uiState.location.ifEmpty { "관심사" }) {
             navigate(InterestList, null)
         }
 
@@ -161,7 +157,7 @@ fun SignUpContent(
 
         CustomButton("회원가입", onClick = {
             scope.launch {
-                viewModel.event.send(SignUpContract.Event.SignUp(location, interest))
+                viewModel.event.send(SignUpContract.Event.SignUp)
             }
         })
     }
