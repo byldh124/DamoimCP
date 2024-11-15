@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import java.io.File
 
 interface GroupRepository {
-    suspend fun getGroupList(id: String, type: GroupType): Flow<ApiResult<List<GroupItem>>>
+    suspend fun getGroupList(type: GroupType): Flow<ApiResult<List<GroupItem>>>
 
     suspend fun createGroup(
         id: String,

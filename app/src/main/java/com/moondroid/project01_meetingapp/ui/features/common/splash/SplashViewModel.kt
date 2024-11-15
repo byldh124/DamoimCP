@@ -7,6 +7,7 @@ import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.app.CheckVersionUseCase
 import com.moondroid.damoim.domain.usecase.profile.ProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
+import com.moondroid.project01_meetingapp.core.navigation.Home
 import com.moondroid.project01_meetingapp.core.navigation.Sign
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -44,7 +45,7 @@ class SplashViewModel @Inject constructor(
     private suspend fun checkUser() {
         profileUseCase().collect { result ->
             result.onSuccess {
-                setEffect(SplashContract.Effect.Navigate(Sign))
+                setEffect(SplashContract.Effect.Navigate(Home))
             }.onError {
                 setEffect(SplashContract.Effect.Navigate(Sign))
             }

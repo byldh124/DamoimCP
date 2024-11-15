@@ -2,17 +2,21 @@ package com.moondroid.damoim.data.repository
 
 import com.moondroid.damoim.common.GroupType
 import com.moondroid.damoim.common.RequestParam
+import com.moondroid.damoim.data.datasource.local.LocalDatabase
 import com.moondroid.damoim.data.datasource.remote.RemoteDataSource
 import com.moondroid.damoim.data.mapper.DataMapper.toGroupItem
 import com.moondroid.damoim.data.mapper.DataMapper.toProfile
+import com.moondroid.damoim.data.model.dao.ProfileDao
 import com.moondroid.damoim.domain.model.GroupItem
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.damoim.domain.model.status.ApiResult
 import com.moondroid.damoim.domain.repository.GroupRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -23,9 +27,13 @@ import javax.inject.Inject
 
 class GroupRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
+    private val localDatSource: ProfileDao,
 ) : GroupRepository {
-    override suspend fun getGroupList(id: String, type: GroupType): Flow<ApiResult<List<GroupItem>>> =
+    override suspend fun getGroupList(type: GroupType): Flow<ApiResult<List<GroupItem>>> =
         flow<ApiResult<List<GroupItem>>> {
+            val id = runBlocking {
+                localDatSource.getProfile()?.id ?: throw IllegalStateException("profile not found")
+            }
             remoteDataSource.getGroupList(id, type).run {
                 when (this) {
                     is ApiResult.Success -> emit(ApiResult.Success(response.map { it.toGroupItem() }))
@@ -33,6 +41,8 @@ class GroupRepositoryImpl @Inject constructor(
                     is ApiResult.Error -> emit(ApiResult.Error(throwable))
                 }
             }
+        }.catch {
+            emit(ApiResult.Error(it))
         }.flowOn(Dispatchers.IO)
 
     override suspend fun createGroup(
@@ -41,7 +51,7 @@ class GroupRepositoryImpl @Inject constructor(
         location: String,
         purpose: String,
         interest: String,
-        file: File
+        file: File,
     ): Flow<ApiResult<GroupItem>> {
         val body = HashMap<String, RequestBody>()
         body[RequestParam.ID] = id.toRequestBody()
@@ -72,7 +82,7 @@ class GroupRepositoryImpl @Inject constructor(
         interest: String,
         information: String,
         thumb: File?,
-        intro: File?
+        intro: File?,
     ): Flow<ApiResult<GroupItem>> {
         val body = HashMap<String, RequestBody>()
         body[RequestParam.ORIGIN_TITLE] = originTitle.toRequestBody()

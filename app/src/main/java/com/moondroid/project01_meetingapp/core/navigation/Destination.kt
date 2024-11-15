@@ -11,11 +11,8 @@ object Splash : Destination
 @Serializable
 object InterestList : Destination
 
-
 @Serializable
 object LocationList : Destination
-
-
 
 
 @Serializable
@@ -33,3 +30,15 @@ object Home : Destination
 
 @Serializable
 object HomeRoot : Destination
+
+@Serializable
+object HomeList : Destination
+
+@Serializable
+object HomeSearch : Destination
+
+@Serializable
+object HomeMyGroup : Destination
+
+@Serializable
+object HomeMap : Destination

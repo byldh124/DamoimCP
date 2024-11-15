@@ -92,7 +92,6 @@ fun SignUpScreen(
             }
         }
 
-
         if (uiState.concrete == SignUpContract.State.Concrete.Loading) {
             Dialog({}) {
                 CircularProgressIndicator(color = Color.White)
