@@ -9,7 +9,6 @@ import com.moondroid.damoim.domain.usecase.group.GetGroupUseCase
 import com.moondroid.damoim.domain.usecase.profile.ProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,9 +19,9 @@ class HomeViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: HomeContract.Event) {
         when (event) {
-            HomeContract.Event.Fetch -> {
+            is HomeContract.Event.Fetch -> {
                 setState { copy(concrete = HomeContract.State.Concrete.Loading) }
-                getGroup()
+                getGroup(event.groupType)
             }
 
             HomeContract.Event.GetProfile -> getProfile()
@@ -45,8 +44,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getGroup() {
-        getGroupUseCase(GroupType.ALL).collect { result ->
+    private suspend fun getGroup(groupType: GroupType) {
+        getGroupUseCase(groupType).collect { result ->
             result.onSuccess {
                 setState { copy(list = it, concrete = HomeContract.State.Concrete.Idle) }
             }.onError {
@@ -54,7 +53,7 @@ class HomeViewModel @Inject constructor(
                     copy(
                         errorMessage = it.simpleName(),
                         concrete = HomeContract.State.Concrete.Error,
-                        retryType = HomeContract.Event.Fetch
+                        retryType = HomeContract.Event.Fetch(groupType)
                     )
                 }
             }.onFail {
@@ -62,7 +61,7 @@ class HomeViewModel @Inject constructor(
                     copy(
                         errorMessage = "에러 : $it",
                         concrete = HomeContract.State.Concrete.Error,
-                        retryType = HomeContract.Event.Fetch
+                        retryType = HomeContract.Event.Fetch(groupType)
                     )
                 }
             }

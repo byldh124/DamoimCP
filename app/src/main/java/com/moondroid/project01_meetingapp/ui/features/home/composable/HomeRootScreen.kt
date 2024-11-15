@@ -130,7 +130,7 @@ private fun HomeRootBody(
                 }
 
                 composable<HomeMyGroup> {
-                    MyGroupScreen()
+                    MyGroupScreen(viewModel)
                 }
 
                 composable<HomeMap> {

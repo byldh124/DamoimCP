@@ -31,7 +31,7 @@ fun SearchScreen(viewModel: HomeViewModel) {
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(viewModel) {
-        viewModel.event.send(HomeContract.Event.Fetch)
+        viewModel.event.send(HomeContract.Event.Fetch())
     }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(modifier = Modifier.fillMaxSize()) {

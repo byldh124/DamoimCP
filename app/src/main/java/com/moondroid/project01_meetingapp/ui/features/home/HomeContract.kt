@@ -1,6 +1,7 @@
 package com.moondroid.project01_meetingapp.ui.features.home
 
 import androidx.navigation.NavOptions
+import com.moondroid.damoim.common.GroupType
 import com.moondroid.damoim.domain.model.GroupItem
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.project01_meetingapp.core.base.UiEffect
@@ -13,7 +14,7 @@ interface HomeContract {
         val profile: Profile? = null,
         val list: List<GroupItem> = emptyList(),
         val errorMessage: String = "",
-        val retryType: Event = Event.Fetch,
+        val retryType: Event = Event.Fetch(),
         val concrete: Concrete = Concrete.Idle,
     ) : UiState {
         enum class Concrete {
@@ -23,7 +24,7 @@ interface HomeContract {
 
     sealed interface Event : UiEvent {
         data object GetProfile : Event
-        data object Fetch : Event
+        data class Fetch(val groupType: GroupType = GroupType.ALL) : Event
     }
 
     sealed interface Effect : UiEffect {
