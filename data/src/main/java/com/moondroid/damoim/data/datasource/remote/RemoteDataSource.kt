@@ -4,7 +4,6 @@ import com.moondroid.damoim.common.GroupType
 import com.moondroid.damoim.data.model.dto.GroupItemDTO
 import com.moondroid.damoim.data.model.dto.MoimItemDTO
 import com.moondroid.damoim.data.model.dto.ProfileDTO
-import com.moondroid.damoim.data.model.entity.ProfileEntity
 import com.moondroid.damoim.data.model.request.CreateMoimRequest
 import com.moondroid.damoim.data.model.request.SaltRequest
 import com.moondroid.damoim.data.model.request.SignInRequest
@@ -20,9 +19,9 @@ interface RemoteDataSource {
 
     //Sign
     suspend fun getSalt(request: SaltRequest): ApiResult<String>                                        // 로그인 관련
-    suspend fun signUp(request: SignUpRequest): ApiResult<ProfileEntity>                                // 회원가입
-    suspend fun signIn(request: SignInRequest): ApiResult<ProfileEntity>                                // 로그인
-    suspend fun socialSign(request: SocialSignRequest): ApiResult<ProfileEntity>                        // 카카오 로그인
+    suspend fun signUp(request: SignUpRequest): ApiResult<ProfileDTO>                                // 회원가입
+    suspend fun signIn(request: SignInRequest): ApiResult<ProfileDTO>                                // 로그인
+    suspend fun socialSign(request: SocialSignRequest): ApiResult<ProfileDTO>                        // 카카오 로그인
     suspend fun resign(id: String): ApiResult<Unit>
 
     //Profile
@@ -35,10 +34,11 @@ interface RemoteDataSource {
     suspend fun updateProfile(
         body: Map<String, RequestBody>,
         thumb: MultipartBody.Part?,
-    ): ApiResult<ProfileEntity>
+    ): ApiResult<ProfileDTO>
 
     //Group
     suspend fun getGroupList(id: String, type: GroupType): ApiResult<List<GroupItemDTO>>
+    suspend fun getGroupDetail(title: String): ApiResult<GroupItemDTO>
     suspend fun createGroup(
         body: Map<String, RequestBody>,
         file: MultipartBody.Part?,

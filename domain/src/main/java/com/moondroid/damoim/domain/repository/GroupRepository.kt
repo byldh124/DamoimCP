@@ -30,6 +30,8 @@ interface GroupRepository {
         intro: File?
     ): Flow<ApiResult<GroupItem>>
 
+    suspend fun getGroupDetail(title: String): Flow<ApiResult<GroupItem>>
+
     suspend fun getMembers(title: String): Flow<ApiResult<List<Profile>>>
     suspend fun saveRecent(id: String, title: String, lastTime: String): Flow<ApiResult<Unit>>
     suspend fun join(id: String, title: String): Flow<ApiResult<Unit>>

@@ -1,14 +1,16 @@
 package com.moondroid.damoim.data.repository
 
 import com.moondroid.damoim.common.RequestParam
-import com.moondroid.damoim.data.model.dao.ProfileDao
 import com.moondroid.damoim.data.datasource.remote.RemoteDataSource
 import com.moondroid.damoim.data.mapper.DataMapper.toProfile
+import com.moondroid.damoim.data.mapper.DataMapper.toProfileEntity
+import com.moondroid.damoim.data.model.dao.ProfileDao
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.damoim.domain.model.status.ApiResult
 import com.moondroid.damoim.domain.repository.ProfileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.MediaType.Companion.toMediaType
@@ -21,7 +23,7 @@ import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: ProfileDao
+    private val localDataSource: ProfileDao,
 ) : ProfileRepository {
     override suspend fun getProfile(): Flow<ApiResult<Profile>> {
         return flow<ApiResult<Profile>> {
@@ -32,11 +34,15 @@ class ProfileRepositoryImpl @Inject constructor(
                     emit(ApiResult.Error(IllegalStateException("Data is empty")))
                 }
             }
+        }.catch {
+            emit(ApiResult.Error(it))
         }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun updateToken(id: String, token: String): Flow<ApiResult<Unit>> = flow {
         emit(remoteDataSource.updateToken(id, token))
+    }.catch {
+        emit(ApiResult.Error(it))
     }.flowOn(Dispatchers.IO)
 
 
@@ -44,25 +50,21 @@ class ProfileRepositoryImpl @Inject constructor(
         return flow<ApiResult<Unit>> {
             localDataSource.getProfile().run {
                 this?.let {
-                    remoteDataSource.updateInterest(it.id, interest).run {
-                        when (this) {
-                            is ApiResult.Error -> emit(ApiResult.Error(throwable))
-                            is ApiResult.Fail -> emit(ApiResult.Fail(code))
-                            is ApiResult.Success -> emit(ApiResult.Success(response))
-                        }
-                    }
+                    emit(remoteDataSource.updateInterest(it.id, interest))
                 } ?: run {
                     emit(ApiResult.Error(IllegalStateException("Data is empty")))
                 }
             }
+        }.catch {
+            emit(ApiResult.Error(it))
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun deleteProfile(): Flow<ApiResult<Boolean>> {
-        return flow {
-            localDataSource.deleteProfileAll().run {
-                emit(ApiResult.Success(true))
-            }
+    override suspend fun deleteProfile(): Flow<ApiResult<Unit>> {
+        return flow<ApiResult<Unit>> {
+            emit(ApiResult.Success(localDataSource.deleteProfileAll()))
+        }.catch {
+            emit(ApiResult.Error(it))
         }.flowOn(Dispatchers.IO)
     }
 
@@ -74,7 +76,7 @@ class ProfileRepositoryImpl @Inject constructor(
         location: String,
         message: String,
         thumb: File?,
-    ): Flow<ApiResult<Profile>>  = flow {
+    ): Flow<ApiResult<Profile>> = flow<ApiResult<Profile>> {
         val body = HashMap<String, RequestBody>()
         body[RequestParam.ID] = id.toRequestBody()
         body[RequestParam.NAME] = name.toRequestBody()
@@ -93,7 +95,7 @@ class ProfileRepositoryImpl @Inject constructor(
             when (this) {
                 is ApiResult.Success -> {
                     localDataSource.deleteProfileAll()
-                    localDataSource.insertProfile(response)
+                    localDataSource.insertProfile(response.toProfileEntity())
                     emit(ApiResult.Success(response.toProfile()))
                 }
 
@@ -101,5 +103,7 @@ class ProfileRepositoryImpl @Inject constructor(
                 is ApiResult.Fail -> emit(ApiResult.Fail(code))
             }
         }
-    }
+    }.catch {
+        emit(ApiResult.Error(it))
+    }.flowOn(Dispatchers.IO)
 }

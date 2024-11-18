@@ -4,9 +4,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.moondroid.damoim.common.debug
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
+import com.moondroid.damoim.domain.usecase.group.GetGroupDetailUseCase
 import com.moondroid.damoim.domain.usecase.group.GetMembersUseCase
 import com.moondroid.damoim.domain.usecase.moim.GetMoimsUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GroupViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    private val getGroupDetailUseCase: GetGroupDetailUseCase,
     private val getMembersUseCase: GetMembersUseCase,
     private val getMoimsUseCase: GetMoimsUseCase,
 ) : BaseViewModel<GroupContract.State, GroupContract.Event, GroupContract.Effect>(GroupContract.State()) {
@@ -26,11 +29,20 @@ class GroupViewModel @Inject constructor(
 
     init {
         title.value = savedStateHandle.toRoute<GroupRoot>().title
+        getGroupDetail()
         getMembers()
         getMoims()
     }
 
     override suspend fun handleEvent(event: GroupContract.Event) {
+    }
+
+    private fun getGroupDetail() {
+        viewModelScope.launch {
+            getGroupDetailUseCase(title.value).collect { result ->
+                debug("getGroupDetail : $result")
+            }
+        }
     }
 
     private fun getMembers() {

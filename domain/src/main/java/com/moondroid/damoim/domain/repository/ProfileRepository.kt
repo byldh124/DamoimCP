@@ -13,7 +13,7 @@ interface ProfileRepository {
 
     suspend fun updateInterest(interest: String): Flow<ApiResult<Unit>>
 
-    suspend fun deleteProfile(): Flow<ApiResult<Boolean>>
+    suspend fun deleteProfile(): Flow<ApiResult<Unit>>
 
     suspend fun updateProfile(
         id: String,

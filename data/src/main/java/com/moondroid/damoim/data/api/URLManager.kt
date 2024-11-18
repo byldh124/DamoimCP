@@ -8,6 +8,7 @@ object URLManager {
 
     /** 그룹 정보 관련 **/
     const val GET_GROUP = "group/group.php"
+    const val GET_GROUP_DETAIL = "group/groupdetail.php"
     const val GET_MEMBER = "group/member.php"
     const val GET_MY_GROUP = "group/myGroup.php"
     const val GET_FAVORITE = "group/favorite.php"

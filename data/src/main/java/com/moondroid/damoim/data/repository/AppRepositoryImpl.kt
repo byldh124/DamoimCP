@@ -5,6 +5,7 @@ import com.moondroid.damoim.domain.model.status.ApiResult
 import com.moondroid.damoim.domain.repository.AppRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
@@ -20,5 +21,7 @@ class AppRepositoryImpl @Inject constructor(
         versionName: String
     ): Flow<ApiResult<Unit>> = flow {
         emit(remoteDataSource.checkAppVersion(packageName, versionCode, versionName))
+    }.catch {
+        emit(ApiResult.Error(it))
     }.flowOn(Dispatchers.IO)
 }
