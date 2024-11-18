@@ -2,6 +2,7 @@ package com.moondroid.damoim.domain.model.status
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -40,9 +41,9 @@ inline fun <T : Any> ApiResult<T>.onError(action: (Throwable) -> Unit): ApiResul
     return this
 }
 
-fun <T: Any> ApiResult<T>.toFlow() : Flow<ApiResult<T>> {
+fun <T> doInFlow(scope: suspend FlowCollector<ApiResult<T>>.() -> Unit): Flow<ApiResult<T>> {
     return flow {
-        emit(this@toFlow)
+        scope(this)
     }.catch {
         emit(ApiResult.Error(it))
     }.flowOn(Dispatchers.IO)

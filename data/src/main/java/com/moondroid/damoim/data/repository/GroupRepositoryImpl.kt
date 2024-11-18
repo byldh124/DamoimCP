@@ -9,6 +9,7 @@ import com.moondroid.damoim.data.model.dao.ProfileDao
 import com.moondroid.damoim.domain.model.GroupItem
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.damoim.domain.model.status.ApiResult
+import com.moondroid.damoim.domain.model.status.doInFlow
 import com.moondroid.damoim.domain.repository.GroupRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -117,13 +118,5 @@ class GroupRepositoryImpl @Inject constructor(
 
     override suspend fun setFavor(id: String, title: String, active: Boolean): Flow<ApiResult<Unit>> = doInFlow {
         remoteDataSource.setFavor(id, title, active)
-    }
-
-    fun <T> doInFlow(scope: suspend FlowCollector<ApiResult<T>>.() -> Unit): Flow<ApiResult<T>> {
-        return flow {
-            scope(this)
-        }.catch {
-            emit(ApiResult.Error(it))
-        }.flowOn(Dispatchers.IO)
     }
 }
