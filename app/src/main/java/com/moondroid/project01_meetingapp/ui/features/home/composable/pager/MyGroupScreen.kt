@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moondroid.damoim.common.GroupType
-import com.moondroid.project01_meetingapp.ui.features.group.list.GroupListScreen
+import com.moondroid.project01_meetingapp.ui.features.group.composable.list.GroupListScreen
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeViewModel
 import com.moondroid.project01_meetingapp.ui.widget.CustomDialog

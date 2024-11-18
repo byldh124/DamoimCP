@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.features.group.list
+package com.moondroid.project01_meetingapp.ui.features.group.composable.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

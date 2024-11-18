@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 interface Destination
 
+// common destination
 @Serializable
 object Splash : Destination
 
@@ -14,7 +15,7 @@ object InterestList : Destination
 @Serializable
 object LocationList : Destination
 
-
+// sign destination
 @Serializable
 object Sign : Destination
 
@@ -24,21 +25,21 @@ data class SignUp(val socialSignData: SocialSignData) : Destination
 @Serializable
 data class SignIn(val isTokenExpired: Boolean = false) : Destination
 
-
+// home destination
 @Serializable
 object Home : Destination
 
 @Serializable
 object HomeRoot : Destination
 
+
+// group detail destination
 @Serializable
-object HomeList : Destination
+object Group: Destination
 
 @Serializable
-object HomeSearch : Destination
+data class GroupRoot(val title: String): Destination
 
-@Serializable
-object HomeMyGroup : Destination
 
-@Serializable
-object HomeMap : Destination
+
+

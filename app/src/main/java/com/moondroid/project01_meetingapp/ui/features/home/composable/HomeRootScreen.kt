@@ -5,11 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -27,9 +23,10 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,16 +42,19 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.project01_meetingapp.core.navigation.Destination
-import com.moondroid.project01_meetingapp.core.navigation.HomeList
-import com.moondroid.project01_meetingapp.core.navigation.HomeMap
-import com.moondroid.project01_meetingapp.core.navigation.HomeMyGroup
-import com.moondroid.project01_meetingapp.core.navigation.HomeSearch
+import com.moondroid.project01_meetingapp.core.navigation.GroupRoot
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
+import com.moondroid.project01_meetingapp.ui.features.home.HomeList
+import com.moondroid.project01_meetingapp.ui.features.home.HomeMap
+import com.moondroid.project01_meetingapp.ui.features.home.HomeMyGroup
+import com.moondroid.project01_meetingapp.ui.features.home.HomeRoute
+import com.moondroid.project01_meetingapp.ui.features.home.HomeSearch
 import com.moondroid.project01_meetingapp.ui.features.home.HomeViewModel
 import com.moondroid.project01_meetingapp.ui.features.home.composable.pager.HomeListScreen
 import com.moondroid.project01_meetingapp.ui.features.home.composable.pager.MapScreen
 import com.moondroid.project01_meetingapp.ui.features.home.composable.pager.MyGroupScreen
 import com.moondroid.project01_meetingapp.ui.features.home.composable.pager.SearchScreen
+import com.moondroid.project01_meetingapp.ui.features.home.homeRoutes
 import com.moondroid.project01_meetingapp.ui.theme.Gray03
 import com.moondroid.project01_meetingapp.ui.theme.Red02
 import com.moondroid.project01_meetingapp.ui.theme.Red04
@@ -74,7 +74,9 @@ fun HomeRootScreen(onAccessTokenExpired: (() -> Unit) -> Unit, navigate: (Destin
         drawerState = drawerState,
         drawerContent = { HomeDrawer(uiState.profile) }
     ) {
-        HomeRootBody(drawerState, viewModel)
+        HomeRootBody(drawerState, viewModel) {
+            navigate(GroupRoot(it), null)
+        }
     }
 }
 
@@ -92,15 +94,19 @@ private fun HomeDrawer(profile: Profile?) {
 @Composable
 private fun HomeRootBody(
     drawerState: DrawerState,
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    navigate:(String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
+    val title = remember {
+        mutableStateOf("모임 리스트")
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("HomeList") },
+                title = { Text(title.value) },
                 navigationIcon = {
                     IconButton({
                         scope.launch {
@@ -116,13 +122,30 @@ private fun HomeRootBody(
             )
         },
         bottomBar = {
-            MyBottomNavigation(navController)
+            MyBottomNavigation(navController) {
+                title.value = it.title
+                navController.navigate(it.route) {
+                    // Pop up to the start destination of the graph to
+                    // avoid building up a large stack of destinations
+                    // on the back stack as users select items
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    // Avoid multiple copies of the same destination when
+                    // reselecting the same item
+                    launchSingleTop = true
+                    // Restore state when reselecting a previously selected item
+                    restoreState = true
+                }
+            }
         }
     ) {
         Box(modifier = Modifier.padding(it)) {
             NavHost(navController = navController, startDestination = HomeList) {
                 composable<HomeList> {
-                    HomeListScreen(viewModel)
+                    HomeListScreen(viewModel) { title ->
+                        navigate(title)
+                    }
                 }
 
                 composable<HomeSearch> {
@@ -141,22 +164,14 @@ private fun HomeRootBody(
     }
 }
 
-data class TopLevelRoute<T : Any>(val name: String, val route: T, val icon: ImageVector)
-
-val topLevelRoutes = listOf(
-    TopLevelRoute("home", HomeList, Icons.Rounded.Home),
-    TopLevelRoute("search", HomeSearch, Icons.Rounded.Search),
-    TopLevelRoute("my", HomeMyGroup, Icons.Rounded.Person),
-    TopLevelRoute("map", HomeMap, Icons.Rounded.MoreVert),
-)
 
 @Composable
-private fun MyBottomNavigation(navController: NavController) {
+private fun MyBottomNavigation(navController: NavController, onItemClick: (HomeRoute) -> Unit) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar {
-        topLevelRoutes.forEach { topLevelRoute ->
+        homeRoutes.forEach { topLevelRoute ->
             NavigationBarItem(
                 icon = {
                     Icon(
@@ -175,19 +190,7 @@ private fun MyBottomNavigation(navController: NavController) {
                 ),
                 selected = currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) } == true,
                 onClick = {
-                    navController.navigate(topLevelRoute.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
-                        launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
-                        restoreState = true
-                    }
+                    onItemClick(topLevelRoute)
                 },
                 alwaysShowLabel = false,
             )

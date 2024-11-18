@@ -9,6 +9,7 @@ import com.moondroid.damoim.common.IntentParam
 import com.moondroid.project01_meetingapp.ui.features.common.interest.composable.InterestListScreen
 import com.moondroid.project01_meetingapp.ui.features.common.location.composable.LocationListScreen
 import com.moondroid.project01_meetingapp.ui.features.common.splash.composable.SplashScreen
+import com.moondroid.project01_meetingapp.ui.features.group.composable.GroupRootScreen
 import com.moondroid.project01_meetingapp.ui.features.home.composable.HomeRootScreen
 import com.moondroid.project01_meetingapp.ui.features.sign.signin.composable.SignInScreen
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.composable.SignUpScreen
@@ -73,6 +74,12 @@ fun AppNavGraph() {
                         navController.navigate(d, o)
                     }
                 )
+            }
+        }
+
+        navigation<Group>(startDestination = GroupRoot::class) {
+            composable<GroupRoot> {
+                GroupRootScreen()
             }
         }
     }

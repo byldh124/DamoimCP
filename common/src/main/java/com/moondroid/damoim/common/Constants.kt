@@ -81,6 +81,7 @@ object RequestParam {
 
 object IntentParam {
     const val ID = "ID"
+    const val TITLE = "TITLE"
     const val NAME = "NAME"
     const val THUMB = "THUMB"
     const val ACTIVITY = "ACTIVITY"
