@@ -11,15 +11,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.moondroid.damoim.common.GroupType
+import com.moondroid.damoim.common.constant.GroupType
 import com.moondroid.project01_meetingapp.ui.features.group.composable.list.GroupListScreen
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeViewModel
 import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
+import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
 import kotlinx.coroutines.launch
 
 @Composable
-fun MyGroupScreen(viewModel: HomeViewModel) {
+fun MyGroupScreen(viewModel: HomeViewModel, toGroupDetail: (String) -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
@@ -28,12 +29,12 @@ fun MyGroupScreen(viewModel: HomeViewModel) {
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        GroupListScreen(uiState.list) {}
+        GroupListScreen(uiState.list) {
+            toGroupDetail(it.title)
+        }
 
         if (uiState.concrete == HomeContract.State.Concrete.Loading) {
-            Dialog({}) {
-                CircularProgressIndicator()
-            }
+            LoadingDialog()
         }
 
         if (uiState.concrete == HomeContract.State.Concrete.Error) {

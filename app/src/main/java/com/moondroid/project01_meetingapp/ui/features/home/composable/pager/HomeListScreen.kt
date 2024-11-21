@@ -15,10 +15,11 @@ import com.moondroid.project01_meetingapp.ui.features.group.composable.list.Grou
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeViewModel
 import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
+import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeListScreen(viewModel: HomeViewModel, navigate: (String) -> Unit) {
+fun HomeListScreen(viewModel: HomeViewModel, toGroupDetail: (String) -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
@@ -28,13 +29,11 @@ fun HomeListScreen(viewModel: HomeViewModel, navigate: (String) -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         GroupListScreen(uiState.list) {
-            navigate(it.title)
+            toGroupDetail(it.title)
         }
 
         if (uiState.concrete == HomeContract.State.Concrete.Loading) {
-            Dialog({}) {
-                CircularProgressIndicator()
-            }
+            LoadingDialog()
         }
 
         if (uiState.concrete == HomeContract.State.Concrete.Error) {

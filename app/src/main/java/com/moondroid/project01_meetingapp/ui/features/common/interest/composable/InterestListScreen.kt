@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.moondroid.damoim.common.IntentParam
+import com.moondroid.damoim.common.constant.IntentParam
 import com.moondroid.project01_meetingapp.ui.features.common.interest.interestIconList
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
 

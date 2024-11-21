@@ -1,7 +1,8 @@
 package com.moondroid.project01_meetingapp.ui.widget
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,10 +12,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -34,7 +31,6 @@ fun CustomTextField(
     maxLength: Int = Int.MAX_VALUE,
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
-    var fieldValue by remember { mutableStateOf(value) }
     val focusManager = LocalFocusManager.current
     Box(
         modifier = Modifier
@@ -42,7 +38,7 @@ fun CustomTextField(
             .padding(bottom = 5.dp)
     ) {
         OutlinedTextField(
-            value = fieldValue,
+            value = value,
             textStyle = Typography.bodyMedium,
             label = { if (label != null) Text(label) },
             maxLines = maxLines,
@@ -50,11 +46,7 @@ fun CustomTextField(
             modifier = Modifier
                 .fillMaxWidth(),
             onValueChange = {
-                if (it.length <= maxLength) {
-                    fieldValue = it
-                    //text = value.filter { it.isDigit() }
-                    onTextChanged(it)
-                }
+                onTextChanged(it)
             },
             keyboardActions = KeyboardActions(
                 onNext = {
@@ -78,5 +70,24 @@ fun CustomTextField(
             )
         )
 
+    }
+}
+
+@Composable
+fun CustomText(value: String, onClick: () -> Unit) {
+    Box(modifier = Modifier.padding(vertical = 5.dp)) {
+        Text(
+            modifier = Modifier
+                .border(
+                    width = 1.dp,
+                    color = Gray03,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .clickable(onClick = onClick)
+                .fillMaxWidth()
+                .padding(horizontal = 15.dp, vertical = 18.dp),
+            text = value,
+            style = Typography.bodyMedium,
+        )
     }
 }

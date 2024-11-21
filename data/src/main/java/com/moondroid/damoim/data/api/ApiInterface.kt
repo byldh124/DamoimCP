@@ -1,6 +1,6 @@
 package com.moondroid.damoim.data.api
 
-import com.moondroid.damoim.common.RequestParam
+import com.moondroid.damoim.common.constant.RequestParam
 import com.moondroid.damoim.data.api.URLManager.BLOCK
 import com.moondroid.damoim.data.api.URLManager.CREATE_GROUP
 import com.moondroid.damoim.data.api.URLManager.CREATE_MOIM

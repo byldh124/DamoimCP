@@ -1,19 +1,12 @@
 package com.moondroid.project01_meetingapp.ui.features.sign.signup.composable
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,10 +17,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
@@ -36,15 +27,15 @@ import com.moondroid.project01_meetingapp.core.navigation.InterestList
 import com.moondroid.project01_meetingapp.core.navigation.LocationList
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpViewModel
-import com.moondroid.project01_meetingapp.ui.theme.Gray03
 import com.moondroid.project01_meetingapp.ui.theme.Red01
-import com.moondroid.project01_meetingapp.ui.theme.Typography
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
 import com.moondroid.project01_meetingapp.ui.widget.CustomButton
 import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
+import com.moondroid.project01_meetingapp.ui.widget.CustomText
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
 import com.moondroid.project01_meetingapp.ui.widget.DatePickerModal
 import com.moondroid.project01_meetingapp.ui.widget.GenderRadioButton
+import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -52,7 +43,9 @@ import kotlinx.coroutines.launch
 fun SignUpScreen(
     interestFlow: StateFlow<String>,
     locationFlow: StateFlow<String>,
-    navigate: (Destination, NavOptions?) -> Unit,
+    navigateToInterest: () -> Unit,
+    navigateToLocation: () -> Unit,
+    navigateToHome: () -> Unit,
     navigateUp: () -> Unit,
 ) {
     val viewModel: SignUpViewModel = hiltViewModel()
@@ -71,7 +64,7 @@ fun SignUpScreen(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect {
             when (it) {
-                is SignUpContract.Effect.Navigate -> navigate(it.destination, it.navOptions)
+                SignUpContract.Effect.NavigateToHome -> navigateToHome()
             }
         }
     }
@@ -80,7 +73,14 @@ fun SignUpScreen(
         title = "회원가입",
         onBack = navigateUp
     ) {
-        SignUpContent(viewModel, uiState, isSocialSign, navigate, onDatePickerClick = { showDateModal = true })
+        SignUpContent(
+            viewModel = viewModel,
+            uiState = uiState,
+            isSocialSign = isSocialSign,
+            navigateToLocation = navigateToLocation,
+            navigateToInterest = navigateToInterest,
+            onDatePickerClick = { showDateModal = true }
+        )
 
         if (showDateModal) {
             DatePickerModal(uiState.birth, {
@@ -93,9 +93,7 @@ fun SignUpScreen(
         }
 
         if (uiState.concrete == SignUpContract.State.Concrete.Loading) {
-            Dialog({}) {
-                CircularProgressIndicator(color = Color.White)
-            }
+            LoadingDialog()
         }
 
         if (uiState.concrete == SignUpContract.State.Concrete.Error) {
@@ -113,7 +111,8 @@ fun SignUpContent(
     viewModel: SignUpViewModel,
     uiState: SignUpContract.State,
     isSocialSign: Boolean,
-    navigate: (Destination, NavOptions?) -> Unit,
+    navigateToLocation: () -> Unit,
+    navigateToInterest: () -> Unit,
     onDatePickerClick: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -174,13 +173,9 @@ fun SignUpContent(
             onDatePickerClick()
         }
 
-        CustomText(uiState.location.ifEmpty { "관심지역" }) {
-            navigate(LocationList, null)
-        }
+        CustomText(uiState.location.ifEmpty { "관심지역" }, onClick = navigateToLocation)
 
-        CustomText(uiState.interest.ifEmpty { "관심사" }) {
-            navigate(InterestList, null)
-        }
+        CustomText(uiState.interest.ifEmpty { "관심사" }, onClick = navigateToInterest)
 
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -205,24 +200,5 @@ fun SignUpContent(
                 viewModel.event.send(SignUpContract.Event.SignUp)
             }
         })
-    }
-}
-
-@Composable
-fun CustomText(text: String, onClick: () -> Unit) {
-    Box(modifier = Modifier.padding(vertical = 5.dp)) {
-        Text(
-            modifier = Modifier
-                .border(
-                    width = 1.dp,
-                    color = Gray03,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .clickable(onClick = onClick)
-                .fillMaxWidth()
-                .padding(horizontal = 15.dp, vertical = 18.dp),
-            text = text,
-            style = Typography.bodyMedium
-        )
     }
 }

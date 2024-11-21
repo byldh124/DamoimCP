@@ -3,7 +3,7 @@ package com.moondroid.damoim.data.model.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.moondroid.damoim.common.RequestParam
+import com.moondroid.damoim.common.constant.RequestParam
 
 /**
  * User Model class for Room
@@ -26,5 +26,5 @@ data class ProfileEntity(
     @ColumnInfo(name = RequestParam.THUMB)
     val thumb: String,
     @ColumnInfo(name = RequestParam.MESSAGE)
-    val message: String
+    val message: String,
 )

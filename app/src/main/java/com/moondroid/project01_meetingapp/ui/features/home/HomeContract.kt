@@ -1,13 +1,11 @@
 package com.moondroid.project01_meetingapp.ui.features.home
 
-import androidx.navigation.NavOptions
-import com.moondroid.damoim.common.GroupType
+import com.moondroid.damoim.common.constant.GroupType
 import com.moondroid.damoim.domain.model.GroupItem
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.project01_meetingapp.core.base.UiEffect
 import com.moondroid.project01_meetingapp.core.base.UiEvent
 import com.moondroid.project01_meetingapp.core.base.UiState
-import com.moondroid.project01_meetingapp.core.navigation.Destination
 
 interface HomeContract {
     data class State(
@@ -28,6 +26,6 @@ interface HomeContract {
     }
 
     sealed interface Effect : UiEffect {
-        data class Navigate(val d: Destination, val options: NavOptions) : Effect
+        data object Expired : Effect
     }
 }

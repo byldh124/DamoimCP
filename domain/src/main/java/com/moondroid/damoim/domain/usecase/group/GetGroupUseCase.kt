@@ -1,6 +1,6 @@
 package com.moondroid.damoim.domain.usecase.group
 
-import com.moondroid.damoim.common.GroupType
+import com.moondroid.damoim.common.constant.GroupType
 import com.moondroid.damoim.domain.repository.GroupRepository
 import javax.inject.Inject
 

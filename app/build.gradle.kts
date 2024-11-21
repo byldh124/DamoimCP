@@ -93,6 +93,7 @@ dependencies {
 
     // coil image loader
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
 
     // firebase
     implementation(libs.bundles.firebase)

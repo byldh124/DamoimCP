@@ -21,5 +21,5 @@ interface MoimRepository {
 
     suspend fun getMoimMembers(joinMember: String) : Flow<ApiResult<List<Profile>>>
 
-    suspend fun joinMoim(id: String, title: String, date: String) : Flow<ApiResult<MoimItem>>
+    suspend fun joinMoim(title: String, date: String) : Flow<ApiResult<MoimItem>>
 }

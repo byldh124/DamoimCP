@@ -1,7 +1,9 @@
 package com.moondroid.damoim.data.model.dao
 
 import androidx.room.*
+import com.moondroid.damoim.common.exception.DMException
 import com.moondroid.damoim.data.model.entity.ProfileEntity
+import kotlinx.coroutines.runBlocking
 
 @Dao
 interface ProfileDao {
@@ -13,6 +15,4 @@ interface ProfileDao {
 
     @Query("DELETE FROM profile")
     suspend fun deleteProfileAll()
-
-    suspend fun getProfile(): ProfileEntity? = getProfileList().lastOrNull()
 }

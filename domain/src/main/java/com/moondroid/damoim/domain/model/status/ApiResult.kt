@@ -1,5 +1,7 @@
 package com.moondroid.damoim.domain.model.status
 
+import com.moondroid.damoim.common.constant.ResponseCode
+import com.moondroid.damoim.common.exception.DMException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -26,17 +28,17 @@ sealed class ApiResult<out T> {
     }
 }
 
-inline fun <T : Any> ApiResult<T>.onSuccess(action: (T) -> Unit): ApiResult<T> {
+inline fun <T> ApiResult<T>.onSuccess(action: (T) -> Unit): ApiResult<T> {
     if (this is ApiResult.Success) action(response)
     return this
 }
 
-inline fun <T : Any> ApiResult<T>.onFail(action: (Int) -> Unit): ApiResult<T> {
+inline fun <T> ApiResult<T>.onFail(action: (Int) -> Unit): ApiResult<T> {
     if (this is ApiResult.Fail) action(code)
     return this
 }
 
-inline fun <T : Any> ApiResult<T>.onError(action: (Throwable) -> Unit): ApiResult<T> {
+inline fun <T> ApiResult<T>.onError(action: (Throwable) -> Unit): ApiResult<T> {
     if (this is ApiResult.Error) action(throwable)
     return this
 }
@@ -45,6 +47,9 @@ fun <T> doInFlow(scope: suspend FlowCollector<ApiResult<T>>.() -> Unit): Flow<Ap
     return flow {
         scope(this)
     }.catch {
-        emit(ApiResult.Error(it))
+        when (it) {
+            is DMException.ProfileException -> emit(ApiResult.Fail(ResponseCode.PROFILE_ERROR))
+            else -> emit(ApiResult.Error(it))
+        }
     }.flowOn(Dispatchers.IO)
 }

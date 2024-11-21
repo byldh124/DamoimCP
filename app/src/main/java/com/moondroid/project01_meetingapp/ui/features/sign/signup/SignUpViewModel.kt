@@ -5,18 +5,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.moondroid.damoim.common.DMRegex
-import com.moondroid.damoim.common.byteToString
-import com.moondroid.damoim.common.debug
-import com.moondroid.damoim.common.hashingPw
-import com.moondroid.damoim.common.simpleName
+import com.moondroid.damoim.common.constant.DMRegex
+import com.moondroid.damoim.common.util.byteToString
+import com.moondroid.damoim.common.util.hashingPw
+import com.moondroid.damoim.common.util.simpleName
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.profile.UpdateTokenUseCase
 import com.moondroid.damoim.domain.usecase.sign.SignUpUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
-import com.moondroid.project01_meetingapp.core.navigation.HomeRoot
 import com.moondroid.project01_meetingapp.core.navigation.SignUp
 import com.moondroid.project01_meetingapp.core.navigation.SocialSignDataType
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract.Effect
@@ -42,7 +40,8 @@ class SignUpViewModel @Inject constructor(
     val isSocialSign = _isSocialSign.asStateFlow()
 
     init {
-        val data = savedStateHandle.toRoute<SignUp>(typeMap = mapOf(typeOf<SocialSignData>() to SocialSignDataType)).socialSignData
+        val data =
+            savedStateHandle.toRoute<SignUp>(typeMap = mapOf(typeOf<SocialSignData>() to SocialSignDataType)).socialSignData
         if (!data.isEmpty()) {
             setState { copy(id = data.id, pw = data.id, confirmPw = data.id, thumb = data.thumb, name = data.name) }
         }
@@ -132,7 +131,7 @@ class SignUpViewModel @Inject constructor(
                 thumb
             ).collect { result ->
                 result.onSuccess {
-                    getMsgToken(id)
+                    getMsgToken()
                 }.onFail {
                     setState { copy(errorMessage = "에러 : $it", concrete = State.Concrete.Error) }
                 }.onError {
@@ -146,15 +145,15 @@ class SignUpViewModel @Inject constructor(
      * FCM 토큰 생성
      * [토큰 생성되지 않은 경우에도 정상처리]
      */
-    private fun getMsgToken(id: String) {
+    private fun getMsgToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
-                setEffect(Effect.Navigate(HomeRoot, null))
+                setEffect(Effect.NavigateToHome)
                 return@OnCompleteListener
             }
 
             val token = task.result
-            updateToken(id, token)
+            updateToken(token)
         })
     }
 
@@ -162,10 +161,10 @@ class SignUpViewModel @Inject constructor(
      * 토큰 등록
      * [토큰 미등록시에도 정상처리]
      */
-    private fun updateToken(id: String, token: String) {
+    private fun updateToken(token: String) {
         viewModelScope.launch {
-            updateTokenUseCase(id, token).collect {
-                setEffect(Effect.Navigate(HomeRoot, null))
+            updateTokenUseCase(token).collect {
+                setEffect(Effect.NavigateToHome)
             }
         }
     }

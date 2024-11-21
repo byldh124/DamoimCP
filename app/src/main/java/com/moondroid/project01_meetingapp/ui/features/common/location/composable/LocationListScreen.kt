@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.moondroid.damoim.common.IntentParam
+import com.moondroid.damoim.common.constant.IntentParam
 import com.moondroid.project01_meetingapp.ui.features.common.location.locationList
 import com.moondroid.project01_meetingapp.ui.theme.Gray04
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout

@@ -1,35 +1,32 @@
 package com.moondroid.project01_meetingapp.ui.features.home
 
-import com.moondroid.damoim.common.GroupType
-import com.moondroid.damoim.common.simpleName
+import com.moondroid.damoim.common.constant.GroupType
+import com.moondroid.damoim.common.constant.ResponseCode
+import com.moondroid.damoim.common.util.simpleName
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.group.GetGroupUseCase
-import com.moondroid.damoim.domain.usecase.profile.ProfileUseCase
+import com.moondroid.damoim.domain.usecase.profile.GetProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val profileUseCase: ProfileUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
     private val getGroupUseCase: GetGroupUseCase,
 ) : BaseViewModel<HomeContract.State, HomeContract.Event, HomeContract.Effect>(HomeContract.State()) {
 
     override suspend fun handleEvent(event: HomeContract.Event) {
         when (event) {
-            is HomeContract.Event.Fetch -> {
-                setState { copy(concrete = HomeContract.State.Concrete.Loading) }
-                getGroup(event.groupType)
-            }
-
+            is HomeContract.Event.Fetch -> getGroup(event.groupType)
             HomeContract.Event.GetProfile -> getProfile()
         }
     }
 
     private suspend fun getProfile() {
-        profileUseCase().collect { result ->
+        getProfileUseCase().collect { result ->
             result.onSuccess {
                 setState { copy(profile = it) }
             }.onError {
@@ -57,12 +54,17 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }.onFail {
-                setState {
-                    copy(
-                        errorMessage = "에러 : $it",
-                        concrete = HomeContract.State.Concrete.Error,
-                        retryType = HomeContract.Event.Fetch(groupType)
-                    )
+                when (it) {
+                    ResponseCode.PROFILE_ERROR -> {
+                        setEffect(HomeContract.Effect.Expired)
+                    }
+                    else -> setState {
+                        copy(
+                            errorMessage = "에러 : $it",
+                            concrete = HomeContract.State.Concrete.Error,
+                            retryType = HomeContract.Event.Fetch(groupType)
+                        )
+                    }
                 }
             }
         }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -14,17 +13,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moondroid.project01_meetingapp.ui.features.group.composable.list.GroupListScreen
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeViewModel
 import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
+import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
 import kotlinx.coroutines.launch
 
 @Composable
-fun SearchScreen(viewModel: HomeViewModel) {
+fun SearchScreen(viewModel: HomeViewModel, toGroupDetail: (String) -> Unit) {
     val query = remember { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
@@ -37,14 +36,16 @@ fun SearchScreen(viewModel: HomeViewModel) {
             Box(modifier = Modifier.padding(horizontal = 20.dp)) {
                 CustomTextField(query.value, onTextChanged = { query.value = it })
             }
-            GroupListScreen(uiState.list.filter { it.title.contains(query.value) }) {}
+            GroupListScreen(uiState.list.filter {
+                it.title.contains(query.value) || it.information.contains(query.value) || it.purpose.contains(query.value)
+            }) {
+                toGroupDetail(it.title)
+            }
         }
 
 
         if (uiState.concrete == HomeContract.State.Concrete.Loading) {
-            Dialog({}) {
-                CircularProgressIndicator()
-            }
+            LoadingDialog()
         }
 
         if (uiState.concrete == HomeContract.State.Concrete.Error) {

@@ -1,6 +1,6 @@
 package com.moondroid.damoim.data.datasource.remote
 
-import com.moondroid.damoim.common.GroupType
+import com.moondroid.damoim.common.constant.GroupType
 import com.moondroid.damoim.data.model.dto.GroupItemDTO
 import com.moondroid.damoim.data.model.dto.MoimItemDTO
 import com.moondroid.damoim.data.model.dto.ProfileDTO

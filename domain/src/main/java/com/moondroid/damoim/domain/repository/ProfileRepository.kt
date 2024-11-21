@@ -9,14 +9,13 @@ interface ProfileRepository {
 
     suspend fun getProfile(): Flow<ApiResult<Profile>>
 
-    suspend fun updateToken(id: String, token: String): Flow<ApiResult<Unit>>
+    suspend fun updateToken(token: String): Flow<ApiResult<Unit>>
 
     suspend fun updateInterest(interest: String): Flow<ApiResult<Unit>>
 
     suspend fun deleteProfile(): Flow<ApiResult<Unit>>
 
     suspend fun updateProfile(
-        id: String,
         name: String,
         birth: String,
         gender: String,

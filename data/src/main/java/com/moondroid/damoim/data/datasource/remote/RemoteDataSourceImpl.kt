@@ -1,6 +1,6 @@
 package com.moondroid.damoim.data.datasource.remote
 
-import com.moondroid.damoim.common.GroupType
+import com.moondroid.damoim.common.constant.GroupType
 import com.moondroid.damoim.data.api.ApiInterface
 import com.moondroid.damoim.data.api.response.ApiStatus
 import com.moondroid.damoim.data.model.dto.GroupItemDTO
@@ -99,12 +99,8 @@ class RemoteDataSourceImpl @Inject constructor(private val api: ApiInterface) : 
         return result.toApiResult()
     }
 
-    @Throws(IllegalStateException::class)
-    override suspend fun getGroupDetail(title: String): ApiResult<GroupItemDTO>  {
-        throw IllegalStateException("aaaaaaaa")
+    override suspend fun getGroupDetail(title: String): ApiResult<GroupItemDTO> =
         api.getGroupDetail(title).toApiResult()
-    }
-
 
     override suspend fun getMoimMember(joinMembers: String): ApiResult<List<ProfileDTO>> =
         api.getMoimMember(joinMembers).toApiResult()

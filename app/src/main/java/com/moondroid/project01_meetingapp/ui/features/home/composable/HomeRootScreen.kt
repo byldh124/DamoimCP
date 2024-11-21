@@ -1,6 +1,8 @@
 package com.moondroid.project01_meetingapp.ui.features.home.composable
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -35,7 +37,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -43,6 +45,8 @@ import androidx.navigation.compose.rememberNavController
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.project01_meetingapp.core.navigation.Destination
 import com.moondroid.project01_meetingapp.core.navigation.GroupRoot
+import com.moondroid.project01_meetingapp.core.navigation.MyInfo
+import com.moondroid.project01_meetingapp.core.navigation.Sign
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeList
 import com.moondroid.project01_meetingapp.ui.features.home.HomeMap
@@ -61,29 +65,48 @@ import com.moondroid.project01_meetingapp.ui.theme.Red04
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeRootScreen(onAccessTokenExpired: (() -> Unit) -> Unit, navigate: (Destination, NavOptions?) -> Unit) {
+fun HomeRootScreen(
+    navigateToGroup: (title: String) -> Unit,
+    navigateToInterest: () -> Unit,
+    navigateToMyInfo: () -> Unit,
+    navigateToSetting: () -> Unit,
+    navigateToSign: () -> Unit,
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val viewModel = hiltViewModel<HomeViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
         viewModel.event.send(HomeContract.Event.GetProfile)
+        viewModel.effect.collect {
+            when (it) {
+                HomeContract.Effect.Expired -> navigateToSign()
+            }
+        }
     }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = { HomeDrawer(uiState.profile) }
+        drawerContent = {
+            HomeDrawer(uiState.profile) {
+                navigateToMyInfo()
+            }
+        }
     ) {
         HomeRootBody(drawerState, viewModel) {
-            navigate(GroupRoot(it), null)
+            navigateToGroup(it)
         }
     }
 }
 
 @Composable
-private fun HomeDrawer(profile: Profile?) {
+private fun HomeDrawer(profile: Profile?, navigateToMyInfo: () -> Unit) {
     ModalDrawerSheet {
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                navigateToMyInfo()
+            }) {
             Text(profile?.name ?: "AAAaaaaaa")
         }
     }
@@ -95,7 +118,7 @@ private fun HomeDrawer(profile: Profile?) {
 private fun HomeRootBody(
     drawerState: DrawerState,
     viewModel: HomeViewModel,
-    navigate:(String) -> Unit
+    navigateToGroup: (title: String) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
@@ -140,20 +163,30 @@ private fun HomeRootBody(
             }
         }
     ) {
-        Box(modifier = Modifier.padding(it)) {
-            NavHost(navController = navController, startDestination = HomeList) {
+        Box(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+        ) {
+            NavHost(
+                navController = navController, startDestination = HomeList,
+            ) {
                 composable<HomeList> {
                     HomeListScreen(viewModel) { title ->
-                        navigate(title)
+                        navigateToGroup(title)
                     }
                 }
 
                 composable<HomeSearch> {
-                    SearchScreen(viewModel)
+                    SearchScreen(viewModel) { title ->
+                        navigateToGroup(title)
+                    }
                 }
 
                 composable<HomeMyGroup> {
-                    MyGroupScreen(viewModel)
+                    MyGroupScreen(viewModel) { title ->
+                        navigateToGroup(title)
+                    }
                 }
 
                 composable<HomeMap> {

@@ -1,11 +1,11 @@
 package com.moondroid.project01_meetingapp.ui.features.common.splash
 
-import com.moondroid.damoim.common.ResponseCode
+import com.moondroid.damoim.common.constant.ResponseCode
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.app.CheckVersionUseCase
-import com.moondroid.damoim.domain.usecase.profile.ProfileUseCase
+import com.moondroid.damoim.domain.usecase.profile.GetProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import com.moondroid.project01_meetingapp.core.navigation.Home
 import com.moondroid.project01_meetingapp.core.navigation.Sign
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val versionUseCase: CheckVersionUseCase,
-    private val profileUseCase: ProfileUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
 ) : BaseViewModel<SplashContract.State, SplashContract.Event, SplashContract.Effect>(SplashContract.State.Idle) {
 
     override suspend fun handleEvent(event: SplashContract.Event) {
@@ -43,10 +43,10 @@ class SplashViewModel @Inject constructor(
     }
 
     private suspend fun checkUser() {
-        profileUseCase().collect { result ->
+        getProfileUseCase().collect { result ->
             result.onSuccess {
                 setEffect(SplashContract.Effect.Navigate(Home))
-            }.onError {
+            }.onFail {
                 setEffect(SplashContract.Effect.Navigate(Sign))
             }
         }

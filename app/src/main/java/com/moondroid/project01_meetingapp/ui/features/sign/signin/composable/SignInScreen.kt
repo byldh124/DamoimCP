@@ -27,12 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.moondroid.project01_meetingapp.R
-import com.moondroid.project01_meetingapp.core.navigation.HomeRoot
-import com.moondroid.project01_meetingapp.core.navigation.Sign
-import com.moondroid.project01_meetingapp.core.navigation.SignUp
 import com.moondroid.project01_meetingapp.ui.features.sign.signin.SignInContract
 import com.moondroid.project01_meetingapp.ui.features.sign.signin.SignInViewModel
 import com.moondroid.project01_meetingapp.ui.features.sign.social.GoogleSignClient
@@ -48,7 +44,7 @@ import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignInScreen(navController: NavController) {
+fun SignInScreen(navigateToSignUp: (SocialSignData) -> Unit, navigateToHome: () -> Unit) {
     val mContext = LocalContext.current
     val scope = rememberCoroutineScope()
     val viewModel = hiltViewModel<SignInViewModel>()
@@ -82,13 +78,11 @@ fun SignInScreen(navController: NavController) {
         viewModel.effect.collect {
             when (it) {
                 is SignInContract.Effect.NavigateToSignUp -> {
-                    navController.navigate(SignUp(it.socialSignData))
+                    navigateToSignUp(it.socialSignData)
                 }
 
                 SignInContract.Effect.NavigateToHome -> {
-                    navController.navigate(HomeRoot) {
-                        popUpTo(Sign) { inclusive = true }
-                    }
+                    navigateToHome()
                 }
             }
         }
@@ -167,9 +161,7 @@ fun SignInScreen(navController: NavController) {
             Row(
                 modifier = Modifier
                     .clickable {
-                        navController.navigate(
-                            SignUp(SocialSignData())
-                        )
+                        navigateToSignUp(SocialSignData())
                     }
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,

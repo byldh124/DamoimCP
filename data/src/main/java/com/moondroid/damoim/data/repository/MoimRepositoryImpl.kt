@@ -1,6 +1,7 @@
 package com.moondroid.damoim.data.repository
 
 import com.google.gson.Gson
+import com.moondroid.damoim.data.datasource.local.LocalDataSource
 import com.moondroid.damoim.data.datasource.remote.RemoteDataSource
 import com.moondroid.damoim.data.mapper.DataMapper.toMoimItem
 import com.moondroid.damoim.data.mapper.DataMapper.toProfile
@@ -10,14 +11,13 @@ import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.damoim.domain.model.status.ApiResult
 import com.moondroid.damoim.domain.model.status.doInFlow
 import com.moondroid.damoim.domain.repository.MoimRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class MoimRepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDataSource) : MoimRepository {
+class MoimRepositoryImpl @Inject constructor(
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource,
+) : MoimRepository {
 
     override suspend fun createMoim(
         title: String,
@@ -27,70 +27,24 @@ class MoimRepositoryImpl @Inject constructor(private val remoteDataSource: Remot
         pay: String,
         lat: Double,
         lng: Double,
-        joinMember: String
-    ): Flow<ApiResult<Unit>> {
-        return flow {
-            val request =
-                CreateMoimRequest(title, address, date, time, pay, lat, lng, Gson().toJson(listOf(joinMember)))
-            emit(remoteDataSource.createMoim(request))
-        }.catch {
-            emit(ApiResult.Error(it))
-        }.flowOn(Dispatchers.IO)
+        joinMember: String,
+    ): Flow<ApiResult<Unit>> = doInFlow {
+        val request =
+            CreateMoimRequest(title, address, date, time, pay, lat, lng, Gson().toJson(listOf(joinMember)))
+        emit(remoteDataSource.createMoim(request))
     }
-
-    /*override suspend fun getMoims(title: String): Flow<ApiResult<List<MoimItem>>> {
-        return flow<ApiResult<List<MoimItem>>> {
-            remoteDataSource.getMoims(title).run {
-                when (this) {
-                    is ApiResult.Error -> emit(ApiResult.Error(throwable))
-                    is ApiResult.Fail -> emit(ApiResult.Fail(code))
-                    is ApiResult.Success -> emit(ApiResult.Success(response.map { it.toMoimItem() }))
-                }
-            }
-        }.catch {
-            emit(ApiResult.Error(it))
-        }.flowOn(Dispatchers.IO)
-    }
-
-
-    override suspend fun getMoimMembers(joinMember: String): Flow<ApiResult<List<Profile>>> {
-        return flow<ApiResult<List<Profile>>> {
-            remoteDataSource.getMoimMember(joinMember).run {
-                when (this) {
-                    is ApiResult.Error -> emit(ApiResult.Error(throwable))
-                    is ApiResult.Fail -> emit(ApiResult.Fail(code))
-                    is ApiResult.Success -> emit(ApiResult.Success(response.map { it.toProfile() }))
-                }
-            }
-        }.catch {
-            emit(ApiResult.Error(it))
-        }.flowOn(Dispatchers.IO)
-    }
-
-    override suspend fun joinMoim(id: String, title: String, date: String): Flow<ApiResult<MoimItem>> {
-        return flow<ApiResult<MoimItem>> {
-            remoteDataSource.joinMoim(id, title, date).run {
-                when (this) {
-                    is ApiResult.Error -> emit(ApiResult.Error(throwable))
-                    is ApiResult.Fail -> emit(ApiResult.Fail(code))
-                    is ApiResult.Success -> emit(ApiResult.Success(response.toMoimItem()))
-                }
-            }
-        }.catch {
-            emit(ApiResult.Error(it))
-        }.flowOn(Dispatchers.IO)
-    }*/
 
     override suspend fun getMoims(title: String): Flow<ApiResult<List<MoimItem>>> = doInFlow {
-        remoteDataSource.getMoims(title).convert { it.map { dto -> dto.toMoimItem() } }
+        emit(remoteDataSource.getMoims(title).convert { it.map { dto -> dto.toMoimItem() } })
     }
 
 
     override suspend fun getMoimMembers(joinMember: String): Flow<ApiResult<List<Profile>>> = doInFlow {
-        remoteDataSource.getMoimMember(joinMember).convert { it.map { dto -> dto.toProfile() } }
+        emit(remoteDataSource.getMoimMember(joinMember).convert { it.map { dto -> dto.toProfile() } })
     }
 
-    override suspend fun joinMoim(id: String, title: String, date: String): Flow<ApiResult<MoimItem>> = doInFlow {
-        remoteDataSource.joinMoim(id, title, date).convert { it.toMoimItem() }
+    override suspend fun joinMoim(title: String, date: String): Flow<ApiResult<MoimItem>> = doInFlow {
+        val id = localDataSource.getId()
+        emit(remoteDataSource.joinMoim(id, title, date).convert { it.toMoimItem() })
     }
 }

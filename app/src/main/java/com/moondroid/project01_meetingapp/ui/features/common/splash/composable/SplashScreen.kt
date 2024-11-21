@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.moondroid.damoim.common.debug
+import com.moondroid.damoim.common.util.debug
 import com.moondroid.project01_meetingapp.R
 import com.moondroid.project01_meetingapp.core.navigation.Destination
 import com.moondroid.project01_meetingapp.ui.features.common.splash.SplashContract

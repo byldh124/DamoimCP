@@ -6,12 +6,11 @@ import javax.inject.Inject
 
 class UpdateProfileUseCase @Inject constructor(private val repository: ProfileRepository) {
     suspend operator fun invoke(
-        id: String,
         name: String,
         birth: String,
         gender: String,
         location: String,
         message: String,
         thumb: File?,
-    ) = repository.updateProfile(id, name, birth, gender, location, message, thumb)
+    ) = repository.updateProfile(name, birth, gender, location, message, thumb)
 }

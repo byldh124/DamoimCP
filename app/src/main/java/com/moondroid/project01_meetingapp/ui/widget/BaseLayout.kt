@@ -2,6 +2,7 @@ package com.moondroid.project01_meetingapp.ui.widget
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 fun BaseLayout(
     title: String,
     onBack: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable BoxScope.() -> Unit,
 ) {
     Scaffold(
@@ -35,11 +37,13 @@ fun BaseLayout(
                                 contentDescription = "뒤로가기"
                             )
                         }
-                    }
+                    },
+                    actions = actions
                 )
             } else {
                 CenterAlignedTopAppBar(
                     title = { Text(title) },
+                    actions = actions
                 )
             }
         }

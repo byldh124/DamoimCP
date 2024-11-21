@@ -1,12 +1,11 @@
-package com.moondroid.damoim.common
+package com.moondroid.damoim.common.util
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import androidx.annotation.Keep
-import java.io.Serializable
+import com.moondroid.damoim.common.BuildConfig
 import java.security.MessageDigest
 
 fun Any.debug(msg: String) {

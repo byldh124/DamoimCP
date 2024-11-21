@@ -2,12 +2,9 @@ package com.moondroid.damoim.data.repository
 
 import com.moondroid.damoim.data.datasource.remote.RemoteDataSource
 import com.moondroid.damoim.domain.model.status.ApiResult
+import com.moondroid.damoim.domain.model.status.doInFlow
 import com.moondroid.damoim.domain.repository.AppRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,10 +15,8 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun checkAppVersion(
         packageName: String,
         versionCode: Int,
-        versionName: String
-    ): Flow<ApiResult<Unit>> = flow {
+        versionName: String,
+    ): Flow<ApiResult<Unit>> = doInFlow {
         emit(remoteDataSource.checkAppVersion(packageName, versionCode, versionName))
-    }.catch {
-        emit(ApiResult.Error(it))
-    }.flowOn(Dispatchers.IO)
+    }
 }

@@ -3,7 +3,7 @@ package com.moondroid.project01_meetingapp.core.navigation
 import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.NavType
-import com.moondroid.damoim.common.parcelable
+import com.moondroid.damoim.common.util.parcelable
 import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

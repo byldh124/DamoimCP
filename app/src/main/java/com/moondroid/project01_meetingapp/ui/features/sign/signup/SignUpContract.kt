@@ -1,11 +1,11 @@
 package com.moondroid.project01_meetingapp.ui.features.sign.signup
 
 import androidx.navigation.NavOptions
-import com.moondroid.damoim.common.Constants.DEFAULT_PROFILE_IMG
-import com.moondroid.project01_meetingapp.core.navigation.Destination
+import com.moondroid.damoim.common.constant.AppConfig.DEFAULT_PROFILE_IMG
 import com.moondroid.project01_meetingapp.core.base.UiEffect
 import com.moondroid.project01_meetingapp.core.base.UiEvent
 import com.moondroid.project01_meetingapp.core.base.UiState
+import com.moondroid.project01_meetingapp.core.navigation.Destination
 
 class SignUpContract {
     data class State(
@@ -38,11 +38,11 @@ class SignUpContract {
         data class PutLocation(val location: String) : Event
         data class PutInterest(val interest: String) : Event
         data class PutPolicyAgree(val policyAgree: Boolean) : Event
-        data object SignUp: Event
-        data object Retry: Event
+        data object SignUp : Event
+        data object Retry : Event
     }
 
     sealed interface Effect : UiEffect {
-        data class Navigate(val destination: Destination, val navOptions: NavOptions? = null) : Effect
+        data object NavigateToHome: Effect
     }
 }

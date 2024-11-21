@@ -2,8 +2,11 @@ package com.moondroid.project01_meetingapp.core.navigation
 
 import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 import kotlinx.serialization.Serializable
+import java.io.Serial
 
 interface Destination
+@Serializable
+object App: Destination
 
 // common destination
 @Serializable
@@ -39,6 +42,9 @@ object Group: Destination
 
 @Serializable
 data class GroupRoot(val title: String): Destination
+
+@Serializable
+object MyInfo: Destination
 
 
 
