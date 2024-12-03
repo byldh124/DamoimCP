@@ -1,20 +1,18 @@
 package com.moondroid.damoim.data.repository
 
+import com.moondroid.damoim.common.constant.NoResult
 import com.moondroid.damoim.common.constant.RequestParam
 import com.moondroid.damoim.common.exception.DMException
 import com.moondroid.damoim.data.datasource.local.LocalDataSource
 import com.moondroid.damoim.data.datasource.remote.RemoteDataSource
 import com.moondroid.damoim.data.mapper.DataMapper.toProfile
+import com.moondroid.damoim.data.mapper.DataMapper.toProfileEntity
+import com.moondroid.damoim.data.model.request.UpdateTokenRequest
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.damoim.domain.model.status.ApiResult
 import com.moondroid.damoim.domain.model.status.doInFlow
 import com.moondroid.damoim.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 
@@ -27,13 +25,13 @@ class ProfileRepositoryImpl @Inject constructor(
         emit(ApiResult.Success(profileEntity.toProfile()))
     }
 
-    override suspend fun updateToken(token: String): Flow<ApiResult<Unit>> = doInFlow {
+    override suspend fun updateToken(token: String): Flow<ApiResult<NoResult>> = doInFlow {
         val id = localDataSource.getId()
-        emit(remoteDataSource.updateToken(id, token))
+        emit(remoteDataSource.updateToken(UpdateTokenRequest(id, token)))
     }
 
 
-    override suspend fun updateInterest(interest: String): Flow<ApiResult<Unit>> = doInFlow {
+    override suspend fun updateInterest(interest: String): Flow<ApiResult<NoResult>> = doInFlow {
         val id = localDataSource.getId()
         emit(remoteDataSource.updateInterest(id, interest))
     }
@@ -51,20 +49,25 @@ class ProfileRepositoryImpl @Inject constructor(
         thumb: File?,
     ): Flow<ApiResult<Profile>> = doInFlow {
         val id = localDataSource.getId()
-        val body = HashMap<String, RequestBody>()
-        body[RequestParam.ID] = id.toRequestBody()
-        body[RequestParam.NAME] = name.toRequestBody()
-        body[RequestParam.BIRTH] = birth.toRequestBody()
-        body[RequestParam.GENDER] = gender.toRequestBody()
-        body[RequestParam.LOCATION] = location.toRequestBody()
-        body[RequestParam.MESSAGE] = message.toRequestBody()
+        val body = HashMap<String, String>()
+        body[RequestParam.ID] = id
+        body[RequestParam.NAME] = name
+        body[RequestParam.BIRTH] = birth
+        body[RequestParam.GENDER] = gender
+        body[RequestParam.LOCATION] = location
+        body[RequestParam.MESSAGE] = message
 
-        var thumbPart: MultipartBody.Part? = null
-        thumb?.let { file ->
-            val requestBody = file.asRequestBody("image/*".toMediaType())
-            thumbPart = MultipartBody.Part.createFormData("thumb", file.name, requestBody)
+        remoteDataSource.updateProfile(body, thumb).run {
+            when (this) {
+                is ApiResult.Success -> {
+                    localDataSource.deleteProfile()
+                    localDataSource.insertProfile(response.toProfileEntity())
+                    emit(ApiResult.Success(response.toProfile()))
+                }
+
+                is ApiResult.Error -> emit(ApiResult.Error(throwable))
+                is ApiResult.Fail -> emit(ApiResult.Fail(code))
+            }
         }
-
-        emit(remoteDataSource.updateProfile(body, thumbPart).convert { it.toProfile() })
     }
 }

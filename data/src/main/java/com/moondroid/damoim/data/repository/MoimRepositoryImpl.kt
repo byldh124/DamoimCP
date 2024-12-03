@@ -1,6 +1,6 @@
 package com.moondroid.damoim.data.repository
 
-import com.google.gson.Gson
+import com.moondroid.damoim.common.constant.NoResult
 import com.moondroid.damoim.data.datasource.local.LocalDataSource
 import com.moondroid.damoim.data.datasource.remote.RemoteDataSource
 import com.moondroid.damoim.data.mapper.DataMapper.toMoimItem
@@ -12,6 +12,8 @@ import com.moondroid.damoim.domain.model.status.ApiResult
 import com.moondroid.damoim.domain.model.status.doInFlow
 import com.moondroid.damoim.domain.repository.MoimRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class MoimRepositoryImpl @Inject constructor(
@@ -28,9 +30,9 @@ class MoimRepositoryImpl @Inject constructor(
         lat: Double,
         lng: Double,
         joinMember: String,
-    ): Flow<ApiResult<Unit>> = doInFlow {
+    ): Flow<ApiResult<NoResult>> = doInFlow {
         val request =
-            CreateMoimRequest(title, address, date, time, pay, lat, lng, Gson().toJson(listOf(joinMember)))
+            CreateMoimRequest(title, address, date, time, pay, lat, lng, Json.encodeToString(listOf(joinMember)))
         emit(remoteDataSource.createMoim(request))
     }
 

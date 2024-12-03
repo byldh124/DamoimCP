@@ -11,8 +11,8 @@ object URLManager {
     const val GET_GROUP_DETAIL = "group/groupdetail.php"
     const val GET_MEMBER = "group/member.php"
     const val GET_MY_GROUP = "group/myGroup.php"
-    const val GET_FAVORITE = "group/favorite.php"
-    const val GET_RECENT = "group/recent.php"
+    const val GET_FAVORITE_GROUP = "group/favorite.php"
+    const val GET_RECENT_GROUP = "group/recent.php"
 
     /** 모임 관련 **/
     const val GET_MOIM = "moim/moim.php"

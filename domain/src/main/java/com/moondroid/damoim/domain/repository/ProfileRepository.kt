@@ -1,5 +1,6 @@
 package com.moondroid.damoim.domain.repository
 
+import com.moondroid.damoim.common.constant.NoResult
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.damoim.domain.model.status.ApiResult
 import kotlinx.coroutines.flow.Flow
@@ -9,11 +10,11 @@ interface ProfileRepository {
 
     suspend fun getProfile(): Flow<ApiResult<Profile>>
 
-    suspend fun updateToken(token: String): Flow<ApiResult<Unit>>
+    suspend fun updateToken(token: String): Flow<ApiResult<NoResult>>
 
-    suspend fun updateInterest(interest: String): Flow<ApiResult<Unit>>
+    suspend fun updateInterest(interest: String): Flow<ApiResult<NoResult>>
 
-    suspend fun deleteProfile(): Flow<ApiResult<Unit>>
+    suspend fun deleteProfile(): Flow<ApiResult<NoResult>>
 
     suspend fun updateProfile(
         name: String,

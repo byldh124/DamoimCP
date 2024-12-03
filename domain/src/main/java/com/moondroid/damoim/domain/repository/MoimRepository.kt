@@ -1,5 +1,6 @@
 package com.moondroid.damoim.domain.repository
 
+import com.moondroid.damoim.common.constant.NoResult
 import com.moondroid.damoim.domain.model.MoimItem
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.damoim.domain.model.status.ApiResult
@@ -15,7 +16,7 @@ interface MoimRepository {
         lat: Double,
         lng: Double,
         joinMember: String
-    ): Flow<ApiResult<Unit>>
+    ): Flow<ApiResult<NoResult>>
 
     suspend fun getMoims(title: String): Flow<ApiResult<List<MoimItem>>>
 

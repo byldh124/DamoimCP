@@ -77,7 +77,6 @@ fun MyInfoScreen(navigateUp: () -> Unit) {
                     )
                 }
             }
-            debug("name : ${uiState.name}")
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {

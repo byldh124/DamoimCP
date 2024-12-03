@@ -36,20 +36,14 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
 
-    //retrofit
-    implementation(libs.bundles.squareup)
-
-    implementation(libs.ktor.clinet.core)
-    implementation(libs.ktor.clinet.cio)
-    implementation(libs.ktor.logging)
-    implementation(libs.ktor.negotiation)
-    implementation(libs.ktor.serialization)
-    implementation(libs.ktor.resources)
+    //ktor for network
     implementation(libs.kotlin.serialization)
+    implementation(libs.bundles.ktor)
 
     // Room
     implementation(libs.bundles.room)
     implementation(libs.room.testing)
+
     //kapt -> ksp migration https://kotlinlang.org/docs/ksp-overview.html#supported-libraries
     ksp(libs.room.compiler)
 

@@ -8,15 +8,17 @@ import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.group.GetGroupUseCase
 import com.moondroid.damoim.domain.usecase.profile.GetProfileUseCase
+import com.moondroid.damoim.domain.usecase.profile.UpdateProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getProfileUseCase: GetProfileUseCase,
     private val getGroupUseCase: GetGroupUseCase,
+    private val updateProfileUseCase: UpdateProfileUseCase
 ) : BaseViewModel<HomeContract.State, HomeContract.Event, HomeContract.Effect>(HomeContract.State()) {
 
     override suspend fun handleEvent(event: HomeContract.Event) {
@@ -42,6 +44,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+
     private suspend fun getGroup(groupType: GroupType) {
         getGroupUseCase(groupType).collect { result ->
             result.onSuccess {
@@ -59,6 +62,7 @@ class HomeViewModel @Inject constructor(
                     ResponseCode.PROFILE_ERROR -> {
                         setEffect(HomeContract.Effect.Expired)
                     }
+
                     else -> setState {
                         copy(
                             errorMessage = "에러 : $it",

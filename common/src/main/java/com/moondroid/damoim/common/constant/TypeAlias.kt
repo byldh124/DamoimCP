@@ -1,3 +1,3 @@
 package com.moondroid.damoim.common.constant
 
-typealias EmptyResult = Unit?
+typealias NoResult = Unit?

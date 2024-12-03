@@ -1,5 +1,6 @@
 package com.moondroid.damoim.domain.repository
 
+import com.moondroid.damoim.common.constant.NoResult
 import com.moondroid.damoim.common.constant.GroupType
 import com.moondroid.damoim.domain.model.GroupItem
 import com.moondroid.damoim.domain.model.Profile
@@ -15,7 +16,7 @@ interface GroupRepository {
         location: String,
         purpose: String,
         interest: String,
-        file: File
+        thumb: File
     ): Flow<ApiResult<GroupItem>>
 
     suspend fun updateGroup(
@@ -32,8 +33,8 @@ interface GroupRepository {
     suspend fun getGroupDetail(title: String): Flow<ApiResult<GroupItem>>
 
     suspend fun getMembers(title: String): Flow<ApiResult<List<Profile>>>
-    suspend fun saveRecent(title: String, lastTime: String): Flow<ApiResult<Unit>>
-    suspend fun join(title: String): Flow<ApiResult<Unit>>
+    suspend fun saveRecent(title: String, lastTime: String): Flow<ApiResult<NoResult>>
+    suspend fun join(title: String): Flow<ApiResult<NoResult>>
     suspend fun getFavor(title: String) : Flow<ApiResult<Boolean>>
-    suspend fun setFavor(title: String, active: Boolean) : Flow<ApiResult<Unit>>
+    suspend fun setFavor(title: String, active: Boolean) : Flow<ApiResult<NoResult>>
 }

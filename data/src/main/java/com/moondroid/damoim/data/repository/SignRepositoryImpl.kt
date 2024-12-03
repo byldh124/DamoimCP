@@ -1,10 +1,10 @@
 package com.moondroid.damoim.data.repository
 
+import com.moondroid.damoim.common.constant.NoResult
 import com.moondroid.damoim.data.datasource.local.LocalDataSource
 import com.moondroid.damoim.data.datasource.remote.RemoteDataSource
 import com.moondroid.damoim.data.mapper.DataMapper.toProfile
 import com.moondroid.damoim.data.mapper.DataMapper.toProfileEntity
-import com.moondroid.damoim.data.model.dao.ProfileDao
 import com.moondroid.damoim.data.model.request.SaltRequest
 import com.moondroid.damoim.data.model.request.SignInRequest
 import com.moondroid.damoim.data.model.request.SignUpRequest
@@ -77,7 +77,7 @@ class SignRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun resign(id: String): Flow<ApiResult<Unit>> = doInFlow {
+    override suspend fun resign(id: String): Flow<ApiResult<NoResult>> = doInFlow {
         emit(remoteDataSource.resign(id))
     }
 

@@ -75,6 +75,7 @@ fun HomeRootScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val viewModel = hiltViewModel<HomeViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(viewModel) {
         viewModel.event.send(HomeContract.Event.GetProfile)
@@ -89,6 +90,9 @@ fun HomeRootScreen(
         drawerState = drawerState,
         drawerContent = {
             HomeDrawer(uiState.profile) {
+                scope.launch {
+                    drawerState.close()
+                }
                 navigateToMyInfo()
             }
         }
