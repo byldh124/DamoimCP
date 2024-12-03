@@ -2,6 +2,7 @@ package com.moondroid.damoim.domain.model.status
 
 import com.moondroid.damoim.common.constant.ResponseCode
 import com.moondroid.damoim.common.exception.DMException
+import com.moondroid.damoim.common.util.debug
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -47,6 +48,7 @@ fun <T> doInFlow(scope: suspend FlowCollector<ApiResult<T>>.() -> Unit): Flow<Ap
     return flow {
         scope(this)
     }.catch {
+        debug("logException: ${it.stackTraceToString()}")
         when (it) {
             is DMException.ProfileException -> emit(ApiResult.Fail(ResponseCode.PROFILE_ERROR))
             else -> emit(ApiResult.Error(it))

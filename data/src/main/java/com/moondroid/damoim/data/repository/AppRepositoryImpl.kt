@@ -1,5 +1,6 @@
 package com.moondroid.damoim.data.repository
 
+import com.moondroid.damoim.common.constant.EmptyResult
 import com.moondroid.damoim.data.datasource.remote.RemoteDataSource
 import com.moondroid.damoim.domain.model.status.ApiResult
 import com.moondroid.damoim.domain.model.status.doInFlow
@@ -16,7 +17,7 @@ class AppRepositoryImpl @Inject constructor(
         packageName: String,
         versionCode: Int,
         versionName: String,
-    ): Flow<ApiResult<Unit>> = doInFlow {
+    ): Flow<ApiResult<EmptyResult>> = doInFlow {
         emit(remoteDataSource.checkAppVersion(packageName, versionCode, versionName))
     }
 }

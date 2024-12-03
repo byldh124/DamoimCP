@@ -10,6 +10,7 @@ import com.moondroid.damoim.domain.usecase.group.GetGroupUseCase
 import com.moondroid.damoim.domain.usecase.profile.GetProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
 
 @HiltViewModel

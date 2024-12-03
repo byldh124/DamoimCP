@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.android.kotlin.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -37,6 +38,14 @@ dependencies {
 
     //retrofit
     implementation(libs.bundles.squareup)
+
+    implementation(libs.ktor.clinet.core)
+    implementation(libs.ktor.clinet.cio)
+    implementation(libs.ktor.logging)
+    implementation(libs.ktor.negotiation)
+    implementation(libs.ktor.serialization)
+    implementation(libs.ktor.resources)
+    implementation(libs.kotlin.serialization)
 
     // Room
     implementation(libs.bundles.room)

@@ -1,5 +1,8 @@
 package com.moondroid.damoim.data.model.dto
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class GroupItemDTO(
     val no: Int,
     val title: String,

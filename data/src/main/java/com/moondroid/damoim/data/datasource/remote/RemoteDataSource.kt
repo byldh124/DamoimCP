@@ -1,5 +1,6 @@
 package com.moondroid.damoim.data.datasource.remote
 
+import com.moondroid.damoim.common.constant.EmptyResult
 import com.moondroid.damoim.common.constant.GroupType
 import com.moondroid.damoim.data.model.dto.GroupItemDTO
 import com.moondroid.damoim.data.model.dto.MoimItemDTO
@@ -15,7 +16,7 @@ import okhttp3.RequestBody
 
 interface RemoteDataSource {
     //Application
-    suspend fun checkAppVersion(packageName: String, versionCode: Int, versionName: String): ApiResult<Unit>
+    suspend fun checkAppVersion(packageName: String, versionCode: Int, versionName: String): ApiResult<EmptyResult>
 
     //Sign
     suspend fun getSalt(request: SaltRequest): ApiResult<String>                                        // 로그인 관련

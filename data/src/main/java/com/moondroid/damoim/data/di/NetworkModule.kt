@@ -13,6 +13,27 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.cookies.AcceptAllCookiesStorage
+import io.ktor.client.plugins.cookies.HttpCookies
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.ANDROID
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.plugins.observer.ResponseObserver
+import io.ktor.http.ContentType
+import io.ktor.http.URLProtocol
+import io.ktor.http.buildUrl
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -39,6 +60,39 @@ object NetworkModule {
                 .build()
             return modified
         }
+    }
+
+    @Provides
+    fun provideKtorHttpClient(): HttpClient {
+        val client = HttpClient(CIO) {
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        ignoreUnknownKeys = true
+                        isLenient = true
+                        prettyPrint = true
+                        encodeDefaults = true
+                    }
+                )
+            }
+            install(HttpTimeout) {
+                requestTimeoutMillis = 60000
+            }
+
+            install(Logging) {
+                logger = Logger.SIMPLE
+                level = LogLevel.ALL
+            }
+
+            install(HttpCookies) {
+                storage = AcceptAllCookiesStorage()
+            }
+            defaultRequest {
+                url(BASE_URL)
+                contentType(ContentType.Application.Json)
+            }
+        }
+        return client
     }
 
     @Provides

@@ -1,7 +1,10 @@
 package com.moondroid.damoim.data.datasource.remote
 
+import com.moondroid.damoim.common.constant.EmptyResult
 import com.moondroid.damoim.common.constant.GroupType
+import com.moondroid.damoim.common.constant.ResponseCode
 import com.moondroid.damoim.data.api.ApiInterface
+import com.moondroid.damoim.data.api.ApiService
 import com.moondroid.damoim.data.api.response.ApiStatus
 import com.moondroid.damoim.data.model.dto.GroupItemDTO
 import com.moondroid.damoim.data.model.dto.MoimItemDTO
@@ -13,19 +16,24 @@ import com.moondroid.damoim.data.model.request.SignUpRequest
 import com.moondroid.damoim.data.model.request.SocialSignRequest
 import com.moondroid.damoim.data.model.request.UpdateTokenRequest
 import com.moondroid.damoim.data.model.response.BaseResponse
+import com.moondroid.damoim.data.model.response.toApiResult
 import com.moondroid.damoim.domain.model.status.ApiResult
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
-class RemoteDataSourceImpl @Inject constructor(private val api: ApiInterface) : RemoteDataSource {
+class RemoteDataSourceImpl @Inject constructor(private val api: ApiInterface, private val service: ApiService) :
+    RemoteDataSource {
 
     override suspend fun checkAppVersion(
         packageName: String,
         versionCode: Int,
         versionName: String,
-    ): ApiResult<Unit> =
-        api.checkAppVersion(packageName, versionCode, versionName).toApiResult()
+    ): ApiResult<EmptyResult> {
+        //return api.checkAppVersion(packageName, versionCode, versionName).toApiResult()
+        return service.checkAppVersion(packageName, versionCode, versionName).toApiResult()
+    }
+
 
     override suspend fun signUp(request: SignUpRequest): ApiResult<ProfileDTO> =
         api.signUp(request).toApiResult()
@@ -90,13 +98,14 @@ class RemoteDataSourceImpl @Inject constructor(private val api: ApiInterface) : 
         api.createMoim(request).toApiResult()
 
     override suspend fun getGroupList(id: String, type: GroupType): ApiResult<List<GroupItemDTO>> {
-        val result = when (type) {
+        /*val result = when (type) {
             GroupType.ALL -> api.getAllGroups()
             GroupType.FAVORITE -> api.getFavoriteGroups(id)
             GroupType.RECENT -> api.getRecentGroups(id)
             GroupType.MY_GROUP -> api.getMyGroups(id)
         }
-        return result.toApiResult()
+        return result.toApiResult()*/
+        return service.getGroupList().toApiResult()
     }
 
     override suspend fun getGroupDetail(title: String): ApiResult<GroupItemDTO> =
@@ -108,11 +117,11 @@ class RemoteDataSourceImpl @Inject constructor(private val api: ApiInterface) : 
     override suspend fun joinMoim(id: String, title: String, date: String): ApiResult<MoimItemDTO> =
         api.joinInMoim(id, title, date).toApiResult()
 
-    private fun <T> ApiStatus<BaseResponse<T>>.toApiResult(): ApiResult<T> {
+    private fun <T : Any> ApiStatus<BaseResponse<T>>.toApiResult(): ApiResult<T> {
         return when (this) {
             is ApiStatus.Error -> ApiResult.Error(throwable)
             is ApiStatus.Success -> {
-                if (response.isSuccess()) ApiResult.Success(response.result)
+                if (response.code == ResponseCode.SUCCESS) ApiResult.Success(response.result)
                 else ApiResult.Fail(response.code)
             }
         }
