@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 sealed class ApiResult<out T> {
+    class SuccessWithoutResult<out T> : ApiResult<T>()
+
     //ResponseCode = 1000(o)
     data class Success<out T>(val response: T) : ApiResult<T>()
 
@@ -24,9 +26,15 @@ sealed class ApiResult<out T> {
         return when (this) {
             is Error -> Error(throwable)
             is Fail -> Fail(code)
+            is SuccessWithoutResult -> SuccessWithoutResult()
             is Success -> Success(mapper(response))
         }
     }
+}
+
+inline fun <T> ApiResult<T>.onSuccessWithoutResult(action: () -> Unit): ApiResult<T> {
+    if (this is ApiResult.SuccessWithoutResult) action()
+    return this
 }
 
 inline fun <T> ApiResult<T>.onSuccess(action: (T) -> Unit): ApiResult<T> {

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -108,7 +110,10 @@ fun SignInScreen(navigateToSignUp: (SocialSignData) -> Unit, navigateToHome: () 
                         viewModel.event.send(SignInContract.Event.IdChanged(it))
                     }
                 },
-                label = "아이디"
+                label = "아이디",
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                )
             )
             CustomTextField(
                 value = uiState.pw,
@@ -118,6 +123,9 @@ fun SignInScreen(navigateToSignUp: (SocialSignData) -> Unit, navigateToHome: () 
                     }
                 },
                 label = "비밀번호",
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
                 visualTransformation = PasswordVisualTransformation()
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -180,11 +188,11 @@ fun SignInScreen(navigateToSignUp: (SocialSignData) -> Unit, navigateToHome: () 
         }
 
         if (uiState.concrete == SignInContract.State.Concrete.Error) {
-            CustomDialog({
+            CustomDialog(uiState.errorMessage, "에러", "재시도") {
                 scope.launch {
                     viewModel.event.send(SignInContract.Event.Retry)
                 }
-            }, uiState.errorMessage, "에러", "재시도")
+            }
         }
     }
 }

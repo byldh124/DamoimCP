@@ -16,4 +16,6 @@ data class SocialSignData(
     val thumb: String = ""
 ): Parcelable {
     fun isEmpty() = id.isEmpty() || name.isEmpty() || thumb.isEmpty()
+
+    fun isNotEmpty() = !isEmpty()
 }

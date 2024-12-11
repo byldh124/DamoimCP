@@ -1,10 +1,17 @@
 package com.moondroid.project01_meetingapp.ui.features.user.myinfo
 
+import android.content.ContentUris
+import android.content.Context
+import android.net.Uri
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import androidx.lifecycle.viewModelScope
 import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.profile.GetProfileUseCase
 import com.moondroid.damoim.domain.usecase.profile.UpdateProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
+import com.moondroid.project01_meetingapp.utils.ImageHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -44,14 +51,16 @@ class MyInfoViewModel @Inject constructor(
             is MyInfoContract.Event.PutMessage -> setState { copy(message = event.message) }
             is MyInfoContract.Event.PutName -> setState { copy(name = event.name) }
             is MyInfoContract.Event.PutUri -> setState { copy(uri = event.uri) }
-            MyInfoContract.Event.Modify -> TODO()
+            is MyInfoContract.Event.Modify -> modify(event.path)
         }
     }
 
-    private suspend fun modify() {
+    private suspend fun modify(path: String?) {
         uiState.value.run {
-            val file: File? = uri?.let { File(it.toString()) }
-            updateProfileUseCase(name, birth, gender, location, message, file)
+            val file: File? = path?.let { File(path) }
+            updateProfileUseCase(name, birth, gender, location, message, file).collect {
+
+            }
         }
 
     }

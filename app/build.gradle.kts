@@ -108,6 +108,7 @@ dependencies {
     implementation(libs.naver.map)
 
     implementation(libs.image.cropper)
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 
     //Clean Architecture
     implementation((project(":common")))

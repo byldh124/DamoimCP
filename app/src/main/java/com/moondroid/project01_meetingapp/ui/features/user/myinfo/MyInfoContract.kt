@@ -29,7 +29,7 @@ interface MyInfoContract {
         data class PutGender(val gender: String) : Event
         data class PutMessage(val message: String) : Event
         data class PutUri(val uri: Uri) : Event
-        data object Modify: Event
+        data class Modify(val path: String?): Event
     }
 
     sealed interface Effect : UiEffect

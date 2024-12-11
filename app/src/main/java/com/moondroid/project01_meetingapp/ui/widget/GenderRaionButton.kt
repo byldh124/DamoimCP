@@ -34,7 +34,7 @@ fun GenderRadioButton(
         ) {
             Text(
                 "남자",
-                modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp),
+                modifier = Modifier.padding(vertical = 15.dp, horizontal = 15.dp),
                 color = if (value == "남자") Color.White else mainColor,
                 style = Typography.bodyLarge
             )
@@ -53,7 +53,7 @@ fun GenderRadioButton(
         ) {
             Text(
                 "여자",
-                modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp),
+                modifier = Modifier.padding(vertical = 15.dp, horizontal = 15.dp),
                 color = if (value == "여자") Color.White else mainColor, style = Typography.bodyLarge
             )
         }

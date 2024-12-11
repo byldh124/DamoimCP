@@ -1,6 +1,7 @@
 package com.moondroid.damoim.data.repository
 
 import com.moondroid.damoim.common.constant.NoResult
+import com.moondroid.damoim.common.exception.DMException
 import com.moondroid.damoim.data.datasource.local.LocalDataSource
 import com.moondroid.damoim.data.datasource.remote.RemoteDataSource
 import com.moondroid.damoim.data.mapper.DataMapper.toProfile
@@ -43,6 +44,7 @@ class SignRepositoryImpl @Inject constructor(
 
                 is ApiResult.Error -> emit(ApiResult.Error(throwable))
                 is ApiResult.Fail -> emit(ApiResult.Fail(code))
+                is ApiResult.SuccessWithoutResult -> emit(ApiResult.Error(DMException.NoResultException()))
             }
         }
     }
@@ -55,9 +57,9 @@ class SignRepositoryImpl @Inject constructor(
                     localDataSource.insertProfile(response.toProfileEntity())
                     emit(ApiResult.Success(response.toProfile()))
                 }
-
                 is ApiResult.Error -> emit(ApiResult.Error(throwable))
                 is ApiResult.Fail -> emit(ApiResult.Fail(code))
+                is ApiResult.SuccessWithoutResult -> emit(ApiResult.Error(DMException.NoResultException()))
             }
         }
     }
@@ -73,6 +75,7 @@ class SignRepositoryImpl @Inject constructor(
 
                 is ApiResult.Error -> emit(ApiResult.Error(throwable))
                 is ApiResult.Fail -> emit(ApiResult.Fail(code))
+                is ApiResult.SuccessWithoutResult -> emit(ApiResult.Error(DMException.NoResultException()))
             }
         }
     }

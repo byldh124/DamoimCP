@@ -4,6 +4,7 @@ import com.moondroid.damoim.common.constant.ResponseCode
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
+import com.moondroid.damoim.domain.model.status.onSuccessWithoutResult
 import com.moondroid.damoim.domain.usecase.app.CheckVersionUseCase
 import com.moondroid.damoim.domain.usecase.profile.GetProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
@@ -28,7 +29,7 @@ class SplashViewModel @Inject constructor(
     private suspend fun checkAppVersion() {
         delay(1000)
         versionUseCase("com.moondroid.project01_meetingapp", 33, "3.0.0").collect { result ->
-            result.onSuccess {
+            result.onSuccessWithoutResult {
                 checkUser()
             }.onFail {
                 when (it) {

@@ -71,7 +71,7 @@ ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", versi
 
 #firebase
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx", version = "22.1.2" }
-firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx", version = "24.0.3" }
+firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx", version = "24.1.0" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version = "19.2.1" }
 firebase-dynamic-link = { group = "com.google.firebase", name = "firebase-dynamic-links-ktx", version = "22.1.0" }
 firebase-realtime-database = { group = "com.google.firebase", name = "firebase-database-ktx", version = "21.0.0" }
@@ -87,7 +87,7 @@ naver-map = { group = "com.naver.maps", name = "map-sdk", version = "3.19.0" }
 #lottie
 lottie-animation = "com.airbnb.android:lottie:6.3.0"
 
-image-cropper = "com.vanniktech:android-image-cropper:4.5.0"
+image-cropper = "com.vanniktech:android-image-cropper:4.6.0"
 
 [bundles]
 room = [

@@ -64,6 +64,7 @@ class ProfileRepositoryImpl @Inject constructor(
                     localDataSource.insertProfile(response.toProfileEntity())
                     emit(ApiResult.Success(response.toProfile()))
                 }
+                is ApiResult.SuccessWithoutResult -> emit(ApiResult.Error(DMException.NoResultException()))
 
                 is ApiResult.Error -> emit(ApiResult.Error(throwable))
                 is ApiResult.Fail -> emit(ApiResult.Fail(code))

@@ -42,10 +42,10 @@ class SignUpViewModel @Inject constructor(
     init {
         val data =
             savedStateHandle.toRoute<SignUp>(typeMap = mapOf(typeOf<SocialSignData>() to SocialSignDataType)).socialSignData
-        if (!data.isEmpty()) {
+        if (data.isNotEmpty()) {
             setState { copy(id = data.id, pw = data.id, confirmPw = data.id, thumb = data.thumb, name = data.name) }
         }
-        _isSocialSign.value = !data.isEmpty()
+        _isSocialSign.value = data.isNotEmpty()
     }
 
     override suspend fun handleEvent(event: Event) {

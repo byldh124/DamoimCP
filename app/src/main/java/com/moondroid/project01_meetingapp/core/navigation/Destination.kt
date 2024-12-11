@@ -18,15 +18,20 @@ object InterestList : Destination
 @Serializable
 object LocationList : Destination
 
+@Serializable
+data class ImageList(val aspectRatio: Int): Destination
+
+
 // sign destination
 @Serializable
 object Sign : Destination
 
 @Serializable
-data class SignUp(val socialSignData: SocialSignData) : Destination
+data class SignIn(val isTokenExpired: Boolean = false) : Destination
 
 @Serializable
-data class SignIn(val isTokenExpired: Boolean = false) : Destination
+data class SignUp(val socialSignData: SocialSignData) : Destination
+
 
 // home destination
 @Serializable

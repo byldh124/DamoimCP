@@ -9,19 +9,20 @@ import com.moondroid.damoim.common.BuildConfig
 import java.security.MessageDigest
 
 fun Any.debug(msg: String) {
-    if (BuildConfig.DEBUG) Log.e("Damoim", "[${simpleName()}] | $msg")
+    if (BuildConfig.DEBUG) {
+        Log.e("Damoim", "[${simpleName()}] | $msg")
+    }
 }
 
 fun debug(msg: String) {
-    if (BuildConfig.DEBUG) Log.e("Damoim", msg)
+    if (BuildConfig.DEBUG) {
+        Log.e("Damoim", msg)
+    }
 }
 
 fun Any.logException(e: Throwable) {
     if (BuildConfig.DEBUG) {
-        Log.e(
-            "Damoim",
-            "[ ${simpleName()} || logException ] -> ${e.printStackTrace()}"
-        )
+        Log.e("Damoim", "[ ${simpleName()} || logException ] -> ${e.printStackTrace()}")
     }
 }
 

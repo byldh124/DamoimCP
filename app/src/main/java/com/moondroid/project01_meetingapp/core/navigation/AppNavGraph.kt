@@ -5,7 +5,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.moondroid.damoim.common.constant.IntentParam
+import com.moondroid.project01_meetingapp.ui.features.common.imagelist.composable.ImageListScreen
 import com.moondroid.project01_meetingapp.ui.features.common.interest.composable.InterestListScreen
 import com.moondroid.project01_meetingapp.ui.features.common.location.composable.LocationListScreen
 import com.moondroid.project01_meetingapp.ui.features.common.splash.composable.SplashScreen
@@ -37,7 +39,7 @@ fun AppNavGraph() {
                     navController.navigate(it) {
                         popUpTo(Splash) { inclusive = true }
                     }
-                })
+                }, navigateUp = { navController.popBackStack() })
             }
 
             composable<InterestList> {
@@ -46,6 +48,11 @@ fun AppNavGraph() {
 
             composable<LocationList> {
                 LocationListScreen(navController)
+            }
+
+            composable<ImageList> { backStackEntry ->
+                val imageList: ImageList = backStackEntry.toRoute()
+                ImageListScreen(imageList.aspectRatio, navController)
             }
 
             navigation<Sign>(startDestination = SignIn::class) {
@@ -121,8 +128,11 @@ fun AppNavGraph() {
                 }
             }
 
-            composable<MyInfo> {
-                MyInfoScreen {
+            composable<MyInfo> { backstackEntry ->
+                val uriFlow = backstackEntry.savedStateHandle.getStateFlow(IntentParam.URI, "")
+                MyInfoScreen(uriFlow, navigateToImageList = {
+                    navController.navigate(ImageList(aspectRatio = 1))
+                }) {
                     navController.popBackStack()
                 }
             }

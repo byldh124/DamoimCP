@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.moondroid.project01_meetingapp.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +30,7 @@ fun BaseLayout(
         topBar = {
             if (onBack != null) {
                 CenterAlignedTopAppBar(
-                    title = { Text(title) },
+                    title = { Text(title, style = Typography.titleLarge) },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
                             Icon(

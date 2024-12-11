@@ -123,7 +123,10 @@ class ApiService @Inject constructor(private val client: HttpClient) {
                     append(it.key, it.value)
                 }
                 if (thumb != null) {
-                    append("thumb", thumb.readBytes(), Headers.build {
+                    append(
+                        "thumb",
+                        thumb.readBytes(),
+                        Headers.build {
                         append(HttpHeaders.ContentType, "image/*")
                         append(HttpHeaders.ContentDisposition, "filename=\"thumb\"")
                     })

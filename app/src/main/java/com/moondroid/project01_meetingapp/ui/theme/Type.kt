@@ -13,29 +13,37 @@ val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.nanum_square_round_eb)),
         fontSize = 16.sp,
-        lineHeight = 24.sp,
+        lineHeight = 18.sp,
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.nanum_square_round_b)),
         fontSize = 16.sp,
-        lineHeight = 24.sp,
+        lineHeight = 18.sp,
         letterSpacing = 0.5.sp
     ),
+
+    bodySmall = TextStyle(
+        fontFamily = FontFamily(Font(R.font.nanum_square_round_r)),
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+    ),
+
     titleLarge = TextStyle(
-        fontFamily = FontFamily(Font(R.font.cafe24_surround)),
+        fontFamily = FontFamily(Font(R.font.nanum_square_round_eb)),
         fontWeight = FontWeight.Normal,
-        fontSize = 24.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.sp
+        fontSize = 20.sp,
+        lineHeight = 22.sp,
+        letterSpacing = 0.5.sp
     ),
 
     titleMedium = TextStyle(
-        fontFamily = FontFamily(Font(R.font.cafe24_surround)),
+        fontFamily = FontFamily(Font(R.font.nanum_square_round_b)),
         fontWeight = FontWeight.Normal,
         fontSize = 20.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.sp
+        lineHeight = 22.sp,
+        letterSpacing = 0.5.sp
     ),
 
 )

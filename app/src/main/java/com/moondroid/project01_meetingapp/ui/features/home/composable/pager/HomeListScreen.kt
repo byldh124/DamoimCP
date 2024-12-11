@@ -37,11 +37,11 @@ fun HomeListScreen(viewModel: HomeViewModel, toGroupDetail: (String) -> Unit) {
         }
 
         if (uiState.concrete == HomeContract.State.Concrete.Error) {
-            CustomDialog({
+            CustomDialog(content = uiState.errorMessage) {
                 scope.launch {
                     viewModel.event.send(uiState.retryType)
                 }
-            }, content = uiState.errorMessage)
+            }
         }
     }
 }

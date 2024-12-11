@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -33,7 +34,7 @@ import com.moondroid.project01_meetingapp.ui.theme.Gray04
 import com.moondroid.project01_meetingapp.ui.theme.Typography
 
 @Composable
-fun CustomDialog(onDismiss: () -> Unit, content: String, title: String? = null, button: String = "확인") {
+fun CustomDialog(content: String, title: String? = null, button: String = "확인", onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -47,27 +48,26 @@ fun CustomDialog(onDismiss: () -> Unit, content: String, title: String? = null, 
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(vertical = 30.dp)
+                        .padding(vertical = 30.dp, horizontal = 10.dp)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (!title.isNullOrEmpty()) {
-                        Text(title, fontSize = 20.sp, style = Typography.bodyLarge)
+                        Text(title, fontSize = 20.sp, style = Typography.bodyLarge, textAlign = TextAlign.Center)
                     }
                     Spacer(Modifier.height(20.dp))
-                    Text(content, fontSize = 18.sp, style = Typography.bodyMedium)
+                    Text(content, fontSize = 18.sp, style = Typography.bodyMedium, textAlign = TextAlign.Center, lineHeight = 22.sp)
                 }
 
                 HorizontalDivider(color = Gray04, thickness = 1.dp)
 
                 Box(
                     modifier = Modifier
-                        .padding(20.dp)
                         .fillMaxWidth()
                         .clickable(onClick = onDismiss),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(button, fontSize = 20.sp, color = Blue01, style = Typography.bodyLarge)
+                    Text(button, fontSize = 20.sp, color = Blue01, style = Typography.bodyLarge, modifier = Modifier.padding(vertical = 20.dp))
                 }
             }
         }

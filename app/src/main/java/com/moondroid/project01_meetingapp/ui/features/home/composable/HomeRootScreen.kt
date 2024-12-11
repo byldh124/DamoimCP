@@ -37,16 +37,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.moondroid.damoim.domain.model.Profile
-import com.moondroid.project01_meetingapp.core.navigation.Destination
-import com.moondroid.project01_meetingapp.core.navigation.GroupRoot
-import com.moondroid.project01_meetingapp.core.navigation.MyInfo
-import com.moondroid.project01_meetingapp.core.navigation.Sign
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeList
 import com.moondroid.project01_meetingapp.ui.features.home.HomeMap
@@ -107,7 +102,6 @@ fun HomeRootScreen(
 private fun HomeDrawer(profile: Profile?, navigateToMyInfo: () -> Unit) {
     ModalDrawerSheet {
         Box(modifier = Modifier
-            .fillMaxWidth()
             .clickable {
                 navigateToMyInfo()
             }) {
@@ -149,7 +143,7 @@ private fun HomeRootBody(
             )
         },
         bottomBar = {
-            MyBottomNavigation(navController) {
+            HomeBottomNavigation(navController) {
                 title.value = it.title
                 navController.navigate(it.route) {
                     // Pop up to the start destination of the graph to
@@ -203,7 +197,7 @@ private fun HomeRootBody(
 
 
 @Composable
-private fun MyBottomNavigation(navController: NavController, onItemClick: (HomeRoute) -> Unit) {
+private fun HomeBottomNavigation(navController: NavController, onItemClick: (HomeRoute) -> Unit) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
@@ -212,7 +206,7 @@ private fun MyBottomNavigation(navController: NavController, onItemClick: (HomeR
             NavigationBarItem(
                 icon = {
                     Icon(
-                        modifier = Modifier.width(32.dp),
+                        modifier = Modifier.width(24.dp),
                         imageVector = topLevelRoute.icon,
                         contentDescription = topLevelRoute.name
                     )
@@ -223,13 +217,13 @@ private fun MyBottomNavigation(navController: NavController, onItemClick: (HomeR
                     selectedTextColor = Red02,
                     unselectedIconColor = Gray03,
                     unselectedTextColor = Gray03,
-                    indicatorColor = Red04
+                    //indicatorColor = Red04
                 ),
                 selected = currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) } == true,
                 onClick = {
                     onItemClick(topLevelRoute)
                 },
-                alwaysShowLabel = false,
+                //alwaysShowLabel = false,
             )
         }
     }

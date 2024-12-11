@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.moondroid.project01_meetingapp.ui.theme.Gray03
@@ -29,6 +31,7 @@ fun CustomTextField(
     label: String? = null,
     maxLines: Int = 1,
     maxLength: Int = Int.MAX_VALUE,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     val focusManager = LocalFocusManager.current
@@ -42,12 +45,14 @@ fun CustomTextField(
             textStyle = Typography.bodyMedium,
             label = { if (label != null) Text(label) },
             maxLines = maxLines,
+            singleLine = true,
             visualTransformation = visualTransformation,
             modifier = Modifier
                 .fillMaxWidth(),
             onValueChange = {
                 onTextChanged(it)
             },
+            keyboardOptions = keyboardOptions,
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -69,7 +74,6 @@ fun CustomTextField(
                 unfocusedLabelColor = Gray03,
             )
         )
-
     }
 }
 

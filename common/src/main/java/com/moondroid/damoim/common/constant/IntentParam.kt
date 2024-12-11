@@ -9,6 +9,8 @@ object IntentParam {
     const val INTEREST = "INTEREST"
     const val INTEREST_ICON = "INTEREST_ICON"
     const val LOCATION = "LOCATION"
+    const val URI = "URI"
+    const val CROPPED_IMAGE = "CROPPED_IMAGE"
     const val ADDRESS = "ADDRESS"
     const val TYPE = "TYPE"
     const val USER = "USER"

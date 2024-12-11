@@ -97,11 +97,11 @@ fun SignUpScreen(
         }
 
         if (uiState.concrete == SignUpContract.State.Concrete.Error) {
-            CustomDialog(onDismiss = {
+            CustomDialog(uiState.errorMessage, "에러", "재시도") {
                 scope.launch {
                     viewModel.event.send(SignUpContract.Event.Retry)
                 }
-            }, uiState.errorMessage, "에러", "재시도")
+            }
         }
     }
 }
