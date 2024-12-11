@@ -1,6 +1,5 @@
 package com.moondroid.damoim.data.model.response
 
-import com.moondroid.damoim.common.constant.NoResult
 import com.moondroid.damoim.common.constant.ResponseCode
 import com.moondroid.damoim.domain.model.status.ApiResult
 import kotlinx.serialization.Serializable

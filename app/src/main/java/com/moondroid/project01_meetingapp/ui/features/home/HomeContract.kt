@@ -9,7 +9,7 @@ import com.moondroid.project01_meetingapp.core.base.UiState
 
 interface HomeContract {
     data class State(
-        val profile: Profile? = null,
+        val profile: Profile = Profile(),
         val list: List<GroupItem> = emptyList(),
         val errorMessage: String = "",
         val retryType: Event = Event.Fetch(),

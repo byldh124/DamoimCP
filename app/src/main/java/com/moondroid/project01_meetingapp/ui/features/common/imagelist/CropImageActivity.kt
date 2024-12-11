@@ -1,6 +1,5 @@
 package com.moondroid.project01_meetingapp.ui.features.common.imagelist
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
@@ -36,17 +35,7 @@ class CropImageActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (Build.VERSION.SDK_INT >= 34) {
-            overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
-        } else {
-            @Suppress("DEPRECATION")
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (Build.VERSION.SDK_INT >= 34) {
-            overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, android.R.anim.fade_in, android.R.anim.fade_out)
         } else {
             @Suppress("DEPRECATION")
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)

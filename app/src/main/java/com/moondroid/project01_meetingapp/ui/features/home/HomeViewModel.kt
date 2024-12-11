@@ -12,7 +12,6 @@ import com.moondroid.damoim.domain.usecase.profile.UpdateProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(

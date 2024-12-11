@@ -2,14 +2,12 @@ package com.moondroid.project01_meetingapp.ui.features.home.composable.pager
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moondroid.project01_meetingapp.ui.features.group.composable.list.GroupListScreen
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract

@@ -30,7 +30,10 @@ interface MyInfoContract {
         data class PutMessage(val message: String) : Event
         data class PutUri(val uri: Uri) : Event
         data class Modify(val path: String?): Event
+        data object RESET: Event
     }
 
-    sealed interface Effect : UiEffect
+    sealed interface Effect : UiEffect {
+        data object Done: Effect
+    }
 }

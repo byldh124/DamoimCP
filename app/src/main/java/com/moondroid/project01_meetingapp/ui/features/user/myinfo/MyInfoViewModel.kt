@@ -1,17 +1,13 @@
 package com.moondroid.project01_meetingapp.ui.features.user.myinfo
 
-import android.content.ContentUris
-import android.content.Context
-import android.net.Uri
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.provider.MediaStore
 import androidx.lifecycle.viewModelScope
+import com.moondroid.damoim.common.util.simpleName
+import com.moondroid.damoim.domain.model.status.onError
+import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
 import com.moondroid.damoim.domain.usecase.profile.GetProfileUseCase
 import com.moondroid.damoim.domain.usecase.profile.UpdateProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
-import com.moondroid.project01_meetingapp.utils.ImageHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -52,14 +48,22 @@ class MyInfoViewModel @Inject constructor(
             is MyInfoContract.Event.PutName -> setState { copy(name = event.name) }
             is MyInfoContract.Event.PutUri -> setState { copy(uri = event.uri) }
             is MyInfoContract.Event.Modify -> modify(event.path)
+            MyInfoContract.Event.RESET -> setState { copy(errorMessage = "",  concrete = MyInfoContract.State.Concrete.Idle)}
         }
     }
 
     private suspend fun modify(path: String?) {
+        setState { copy(concrete = MyInfoContract.State.Concrete.Loading) }
         uiState.value.run {
             val file: File? = path?.let { File(path) }
-            updateProfileUseCase(name, birth, gender, location, message, file).collect {
-
+            updateProfileUseCase(name, birth, gender, location, message, file).collect { result->
+                result.onSuccess {
+                    setState { copy(concrete = MyInfoContract.State.Concrete.Success) }
+                }.onError {
+                    setState { copy(errorMessage = it.simpleName(), concrete = MyInfoContract.State.Concrete.Error) }
+                }.onFail {
+                    setState { copy(errorMessage = "서버 에러 : $it", concrete = MyInfoContract.State.Concrete.Error) }
+                }
             }
         }
 

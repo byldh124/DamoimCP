@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.moondroid.damoim.common.constant.ResponseCode
-import com.moondroid.damoim.common.util.debug
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
@@ -19,7 +18,6 @@ import com.moondroid.damoim.domain.usecase.profile.DeleteProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import com.moondroid.project01_meetingapp.core.navigation.GroupRoot
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

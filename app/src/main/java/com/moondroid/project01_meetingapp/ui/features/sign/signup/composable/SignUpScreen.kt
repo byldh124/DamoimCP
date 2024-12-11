@@ -21,10 +21,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavOptions
-import com.moondroid.project01_meetingapp.core.navigation.Destination
-import com.moondroid.project01_meetingapp.core.navigation.InterestList
-import com.moondroid.project01_meetingapp.core.navigation.LocationList
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpViewModel
 import com.moondroid.project01_meetingapp.ui.theme.Red01

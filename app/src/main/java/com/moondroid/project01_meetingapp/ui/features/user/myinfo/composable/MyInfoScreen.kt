@@ -5,7 +5,6 @@ import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -40,7 +39,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract
+import coil.compose.AsyncImagePainter
 import com.moondroid.project01_meetingapp.ui.features.user.myinfo.MyInfoContract
 import com.moondroid.project01_meetingapp.ui.features.user.myinfo.MyInfoViewModel
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
@@ -49,6 +48,7 @@ import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomText
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
 import com.moondroid.project01_meetingapp.ui.widget.GenderRadioButton
+import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
 import com.moondroid.project01_meetingapp.utils.ImageHelper
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -181,6 +181,32 @@ fun MyInfoScreen(pathFlow: StateFlow<String>, navigateToImageList: () -> Unit, n
                 title = "권한이 없습니다."
             ) {
                 isPermissionErrorDialogShow.value = false
+            }
+        }
+
+        if (uiState.concrete == MyInfoContract.State.Concrete.Loading) {
+            LoadingDialog()
+        }
+
+        if (uiState.concrete == MyInfoContract.State.Concrete.Error) {
+            CustomDialog(
+                title = "네트워크 에러 발생",
+                content = uiState.errorMessage
+            ) {
+                scope.launch {
+                    viewModel.event.send(MyInfoContract.Event.RESET)
+                }
+            }
+        }
+
+        if (uiState.concrete == MyInfoContract.State.Concrete.Success) {
+            CustomDialog(
+                content = "프로필 설정이 완료됐습니다.",
+                title = "설정 완료",
+            ) {
+                scope.launch {
+                    viewModel.event.send(MyInfoContract.Event.RESET)
+                }
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.moondroid.damoim.domain.usecase.moim
 
-import com.moondroid.damoim.domain.repository.GroupRepository
 import com.moondroid.damoim.domain.repository.MoimRepository
 import javax.inject.Inject
 

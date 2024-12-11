@@ -11,14 +11,6 @@ import java.io.File
 import java.io.IOException
 
 internal object ImageHelper {
-    fun getImgUrl(subUrl: String): String {
-        return if (subUrl.startsWith("http")) {
-            subUrl
-        } else {
-            "http://moondroid.dothome.co.kr/damoim/$subUrl"
-        }
-    }
-
     fun getPathFromUri(context: Context, uri: Uri): String? {
         // DocumentProvider
         if (DocumentsContract.isDocumentUri(context, uri)) {

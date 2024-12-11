@@ -16,8 +16,8 @@ val Red03 = Color(0xfff8949b)
 val Red04 = Color(0xFFFFDBDC)
 
 val Blue01 = Color(0xFF007AFF)
-val Blue02 = Color(0xfff8949b)
-val Blue03 = Color(0xfff8949b)
+
+val Mint01 = Color(0xff9FE3D7)
 
 val Gray01 = Color(0xff323232)
 val Gray02 = Color(0xff404040)

@@ -27,7 +27,6 @@ import com.moondroid.project01_meetingapp.ui.features.group.composable.pager.Gro
 import com.moondroid.project01_meetingapp.ui.features.group.composable.pager.GroupDetailScreen
 import com.moondroid.project01_meetingapp.ui.features.group.composable.pager.GroupGalleryScreen
 import com.moondroid.project01_meetingapp.ui.features.group.groupRoutes
-import com.moondroid.project01_meetingapp.ui.theme.Red01
 import com.moondroid.project01_meetingapp.ui.theme.Red02
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
 import kotlinx.coroutines.launch

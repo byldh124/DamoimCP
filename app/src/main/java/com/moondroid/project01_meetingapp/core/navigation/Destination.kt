@@ -2,7 +2,6 @@ package com.moondroid.project01_meetingapp.core.navigation
 
 import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 import kotlinx.serialization.Serializable
-import java.io.Serial
 
 interface Destination
 @Serializable

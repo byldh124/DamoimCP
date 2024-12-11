@@ -1,9 +1,7 @@
 package com.moondroid.project01_meetingapp.ui.features.common.interest.composable
 
-import android.net.Uri
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.moondroid.damoim.common.constant.IntentParam

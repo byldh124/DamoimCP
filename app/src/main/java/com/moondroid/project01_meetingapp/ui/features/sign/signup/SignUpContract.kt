@@ -1,11 +1,9 @@
 package com.moondroid.project01_meetingapp.ui.features.sign.signup
 
-import androidx.navigation.NavOptions
 import com.moondroid.damoim.common.constant.AppConfig.DEFAULT_PROFILE_IMG
 import com.moondroid.project01_meetingapp.core.base.UiEffect
 import com.moondroid.project01_meetingapp.core.base.UiEvent
 import com.moondroid.project01_meetingapp.core.base.UiState
-import com.moondroid.project01_meetingapp.core.navigation.Destination
 
 class SignUpContract {
     data class State(

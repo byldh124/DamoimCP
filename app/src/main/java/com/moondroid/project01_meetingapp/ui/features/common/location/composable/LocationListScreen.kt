@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.moondroid.project01_meetingapp.ui.features.common.location.composable
 
 import androidx.compose.foundation.layout.Box

@@ -1,9 +1,10 @@
 package com.moondroid.damoim.data.model.dao
 
-import androidx.room.*
-import com.moondroid.damoim.common.exception.DMException
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.moondroid.damoim.data.model.entity.ProfileEntity
-import kotlinx.coroutines.runBlocking
 
 @Dao
 interface ProfileDao {
