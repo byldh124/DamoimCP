@@ -40,6 +40,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import com.moondroid.damoim.common.util.debug
+import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract
 import com.moondroid.project01_meetingapp.ui.features.user.myinfo.MyInfoContract
 import com.moondroid.project01_meetingapp.ui.features.user.myinfo.MyInfoViewModel
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
@@ -47,6 +49,7 @@ import com.moondroid.project01_meetingapp.ui.widget.CustomButton
 import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomText
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
+import com.moondroid.project01_meetingapp.ui.widget.DatePickerModal
 import com.moondroid.project01_meetingapp.ui.widget.GenderRadioButton
 import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
 import com.moondroid.project01_meetingapp.utils.ImageHelper
@@ -56,11 +59,18 @@ import kotlinx.coroutines.launch
 typealias event = MyInfoContract.Event
 
 @Composable
-fun MyInfoScreen(pathFlow: StateFlow<String>, navigateToImageList: () -> Unit, navigateUp: () -> Unit) {
+fun MyInfoScreen(
+    pathFlow: StateFlow<String>,
+    locationFlow: StateFlow<String>,
+    navigateToImageList: () -> Unit,
+    navigateToLocation: () -> Unit,
+    navigateUp: () -> Unit
+) {
     val viewModel = hiltViewModel<MyInfoViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val path by pathFlow.collectAsStateWithLifecycle()
+    val location by locationFlow.collectAsStateWithLifecycle()
 
     val isPermissionErrorDialogShow = remember {
         mutableStateOf(false)
@@ -73,6 +83,12 @@ fun MyInfoScreen(pathFlow: StateFlow<String>, navigateToImageList: () -> Unit, n
         }
     }
 
+    LaunchedEffect(location) {
+        if (location.isNotEmpty()) {
+            viewModel.event.send(MyInfoContract.Event.PutLocation(location))
+        }
+    }
+
     val context = LocalContext.current
     val requestPermissions = rememberLauncherForActivityResult(RequestMultiplePermissions()) { permissions ->
         val granted = permissions.any { it.value }
@@ -82,6 +98,8 @@ fun MyInfoScreen(pathFlow: StateFlow<String>, navigateToImageList: () -> Unit, n
             isPermissionErrorDialogShow.value = true
         }
     }
+
+    val showDateModal = remember { mutableStateOf(false) }
 
 
     BaseLayout(
@@ -142,14 +160,14 @@ fun MyInfoScreen(pathFlow: StateFlow<String>, navigateToImageList: () -> Unit, n
             ) {
                 Box(modifier = Modifier.weight(0.7f)) {
                     CustomText(uiState.birth) {
-
+                        showDateModal.value = true
                     }
                 }
                 Spacer(Modifier.width(10.dp))
 
                 Box(modifier = Modifier.weight(1.0f)) {
                     CustomText(uiState.location) {
-
+                        navigateToLocation()
                     }
                 }
             }
@@ -165,6 +183,8 @@ fun MyInfoScreen(pathFlow: StateFlow<String>, navigateToImageList: () -> Unit, n
                 maxLines = 3
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             CustomButton("수정 완료", onClick = {
                 scope.launch {
                     val realPath = uiState.uri?.let { uri ->
@@ -173,6 +193,16 @@ fun MyInfoScreen(pathFlow: StateFlow<String>, navigateToImageList: () -> Unit, n
                     viewModel.event.send(MyInfoContract.Event.Modify(realPath))
                 }
             })
+        }
+
+        if (showDateModal.value) {
+            DatePickerModal(uiState.birth, {
+                scope.launch {
+                    viewModel.event.send(MyInfoContract.Event.PutBirth(it))
+                }
+            }) {
+                showDateModal.value = false
+            }
         }
 
         if (isPermissionErrorDialogShow.value) {

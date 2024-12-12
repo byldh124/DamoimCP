@@ -16,10 +16,14 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.moondroid.damoim.domain.model.GroupItem
+import com.moondroid.project01_meetingapp.R
+import com.moondroid.project01_meetingapp.ui.theme.Container
 import com.moondroid.project01_meetingapp.ui.theme.Typography
 
 @Composable
@@ -39,37 +43,38 @@ fun GroupListScreen(list: List<GroupItem>, onClick: (GroupItem) -> Unit) {
 fun GroupListItem(groupItem: GroupItem, onClick: (GroupItem) -> Unit) {
     Card(
         modifier = Modifier.padding(vertical = 5.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(10.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Container,
+        ),
         //border = BorderStroke(1.dp, Red02),
         onClick = {
             onClick(groupItem)
         },
-        elevation = CardDefaults.elevatedCardElevation(2.dp)
     ) {
         Row(
             modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth()
         ) {
-            Card(
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(120.dp),
-                    model = groupItem.thumb,
-                    contentDescription = "thumbnail",
-                    contentScale = ContentScale.Crop
-                )
-            }
+            AsyncImage(
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(100.dp)
+                    .clip(RoundedCornerShape(10.dp)),
+                model = groupItem.thumb,
+                placeholder = painterResource(R.drawable.placeholder),
+                contentDescription = "thumbnail",
+                contentScale = ContentScale.Crop
+            )
 
             Spacer(Modifier.width(20.dp))
 
             Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxSize()) {
-                Text(groupItem.title, style = Typography.bodyLarge)
-                Spacer(Modifier.height(20.dp))
-                Text(groupItem.purpose, style = Typography.bodyMedium)
+                Text(groupItem.title, style = Typography.bodyMedium)
+                Spacer(Modifier.height(10.dp))
+                Text(groupItem.purpose, style = Typography.bodySmall)
             }
         }
     }

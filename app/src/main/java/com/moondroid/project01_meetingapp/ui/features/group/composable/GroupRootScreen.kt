@@ -93,7 +93,9 @@ fun GroupRootScreen(navigateToSign: () -> Unit, navigateUp: () -> Unit) {
             }
             HorizontalPager(state = pagerState, userScrollEnabled = false, modifier = Modifier.fillMaxSize()) {
                 when (it) {
-                    0 -> GroupDetailScreen(viewModel)
+                    0 -> GroupDetailScreen(viewModel) {
+
+                    }
                     1 -> GroupGalleryScreen()
                     2 -> GroupChatScreen()
                 }

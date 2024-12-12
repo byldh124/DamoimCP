@@ -89,6 +89,9 @@ lottie-animation = "com.airbnb.android:lottie:6.3.0"
 
 image-cropper = "com.vanniktech:android-image-cropper:4.6.0"
 
+#https://github.com/rroohit/ImageCropView
+image-crop-view = "io.github.rroohit:ImageCropView:3.0.1"
+
 [bundles]
 room = [
     "room-runtime",

@@ -221,7 +221,7 @@ class ApiService @Inject constructor(private val client: HttpClient) {
     }
 
     suspend fun setFavor(id: String, title: String, active: Boolean): BaseResponse<NoResult>  {
-        return client.get(URLManager.SAVE_RECENT) {
+        return client.get(URLManager.SAVE_FAVOR) {
             url {
                 parameters.append(RequestParam.ID, id)
                 parameters.append(RequestParam.TITLE, title)

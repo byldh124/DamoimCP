@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -37,6 +39,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -52,6 +55,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.moondroid.damoim.common.util.debug
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeList
@@ -104,7 +108,7 @@ fun HomeRootScreen(
             }
         }
     ) {
-        HomeRootBody(drawerState, viewModel) {
+        HomeRootBody(drawerState, viewModel, navigateToSetting = { navigateToSetting() }) {
             navigateToGroup(it)
         }
     }
@@ -130,7 +134,7 @@ private fun HomeDrawerHeader(profile: Profile, navigateToMyInfo: () -> Unit) {
                 .width(120.dp)
                 .padding(vertical = 15.dp, horizontal = 10.dp)
                 .aspectRatio(1f),
-            shape = RoundedCornerShape(10.dp)
+            shape = CircleShape
         ) {
             AsyncImage(profile.thumb, contentDescription = "thumb")
         }
@@ -140,9 +144,15 @@ private fun HomeDrawerHeader(profile: Profile, navigateToMyInfo: () -> Unit) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(top = 15.dp , end = 10.dp)
+                .padding(top = 15.dp, end = 10.dp)
         ) {
-            Text("프로필 수정", style = Typography.bodyMedium,color = Color.White, textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
+            Text(
+                "프로필 수정",
+                style = Typography.bodyMedium,
+                color = Color.White,
+                textAlign = TextAlign.End,
+                modifier = Modifier.fillMaxWidth()
+            )
             Text(profile.name, style = Typography.bodyMedium)
             Spacer(Modifier.height(10.dp))
             Text(profile.message, style = Typography.bodySmall)
@@ -156,6 +166,7 @@ private fun HomeDrawerHeader(profile: Profile, navigateToMyInfo: () -> Unit) {
 private fun HomeRootBody(
     drawerState: DrawerState,
     viewModel: HomeViewModel,
+    navigateToSetting: () -> Unit,
     navigateToGroup: (title: String) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -167,7 +178,9 @@ private fun HomeRootBody(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(title.value) },
+                title = {
+                    Text(title.value)
+                },
                 navigationIcon = {
                     IconButton({
                         scope.launch {
@@ -176,6 +189,16 @@ private fun HomeRootBody(
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Menu,
+                            contentDescription = "뒤로가기",
+                        )
+                    }
+                },
+                actions = {
+                    IconButton({
+                        navigateToSetting()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Build,
                             contentDescription = "뒤로가기",
                         )
                     }

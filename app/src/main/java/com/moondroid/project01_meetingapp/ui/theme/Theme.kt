@@ -54,7 +54,7 @@ fun DamoimCPTheme(
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
-        color = Color(red = 254, green = 247, blue = 255)
+        color = Container
     )
     MaterialTheme(
         colorScheme = LightColorScheme,

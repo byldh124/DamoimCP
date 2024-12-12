@@ -52,9 +52,12 @@ fun SignUpScreen(
     val location by locationFlow.collectAsStateWithLifecycle()
     var showDateModal by remember { mutableStateOf(false) }
 
-    LaunchedEffect(interest, location) {
-        viewModel.event.send(SignUpContract.Event.PutLocation(location))
+    LaunchedEffect(interest) {
         viewModel.event.send(SignUpContract.Event.PutInterest(interest))
+    }
+
+    LaunchedEffect(location) {
+        viewModel.event.send(SignUpContract.Event.PutLocation(location))
     }
 
     LaunchedEffect(viewModel) {

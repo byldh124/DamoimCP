@@ -13,7 +13,7 @@ import javax.inject.Singleton
 class AppRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
 ) : AppRepository {
-    override suspend fun checkAppVersion(
+    override fun checkAppVersion(
         packageName: String,
         versionCode: Int,
         versionName: String,

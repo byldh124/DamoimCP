@@ -8,6 +8,7 @@ import com.moondroid.damoim.common.constant.ResponseCode
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
+import com.moondroid.damoim.domain.model.status.onSuccessWithoutResult
 import com.moondroid.damoim.domain.usecase.group.GetFavorUseCase
 import com.moondroid.damoim.domain.usecase.group.GetGroupDetailUseCase
 import com.moondroid.damoim.domain.usecase.group.GetMembersUseCase
@@ -28,7 +29,6 @@ class GroupViewModel @Inject constructor(
     private val getFavorUseCase: GetFavorUseCase,
     private val setFavorUseCase: SetFavorUseCase,
     private val saveRecentUseCase: SaveRecentUseCase,
-    private val deleteProfileUseCase: DeleteProfileUseCase,
     private val getMembersUseCase: GetMembersUseCase,
     private val getMoimsUseCase: GetMoimsUseCase,
 ) : BaseViewModel<GroupContract.State, GroupContract.Event, GroupContract.Effect>(GroupContract.State()) {
@@ -111,7 +111,7 @@ class GroupViewModel @Inject constructor(
     private fun toggleFavor() {
         viewModelScope.launch {
             setFavorUseCase(title.value, !uiState.value.isFavor).collect { result ->
-                result.onSuccess {
+                result.onSuccessWithoutResult {
                     getFavor()
                 }
             }
@@ -121,16 +121,10 @@ class GroupViewModel @Inject constructor(
     private fun saveRecent() {
         viewModelScope.launch {
             saveRecentUseCase(title.value, System.currentTimeMillis().toString()).collect { result ->
-                result.onSuccess {
-
-                }.onFail {
+                result.onFail {
                     if (it == ResponseCode.PROFILE_ERROR) {
                         setEffect(GroupContract.Effect.Expired)
-                    } else {
-
                     }
-                }.onError {
-
                 }
             }
         }
