@@ -5,5 +5,5 @@ import javax.inject.Inject
 
 
 class JoinMoimUseCase @Inject constructor(private val repository: MoimRepository) {
-    suspend operator fun invoke(title: String, date: String) = repository.joinMoim(title, date)
+    operator fun invoke(title: String, date: String) = repository.joinMoim(title, date)
 }

@@ -6,7 +6,7 @@ import com.moondroid.damoim.domain.model.status.ApiResult
 import kotlinx.coroutines.flow.Flow
 
 interface SignRepository {
-    suspend fun signUp(
+    fun signUp(
         id: String,
         hashPw: String,
         salt: String,
@@ -18,8 +18,8 @@ interface SignRepository {
         thumb: String
     ): Flow<ApiResult<Profile>>
 
-    suspend fun signIn(id: String, hashPw: String): Flow<ApiResult<Profile>>
-    suspend fun getSalt(id: String): Flow<ApiResult<String>>
-    suspend fun socialSign(id: String): Flow<ApiResult<Profile>>
-    suspend fun resign(id: String): Flow<ApiResult<NoResult>>
+    fun signIn(id: String, hashPw: String): Flow<ApiResult<Profile>>
+    fun getSalt(id: String): Flow<ApiResult<String>>
+    fun socialSign(id: String): Flow<ApiResult<Profile>>
+    fun resign(id: String): Flow<ApiResult<NoResult>>
 }

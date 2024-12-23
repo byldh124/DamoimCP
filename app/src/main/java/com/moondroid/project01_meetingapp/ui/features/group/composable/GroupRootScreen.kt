@@ -96,8 +96,8 @@ fun GroupRootScreen(navigateToSign: () -> Unit, navigateUp: () -> Unit) {
                     0 -> GroupDetailScreen(viewModel) {
 
                     }
-                    1 -> GroupGalleryScreen()
-                    2 -> GroupChatScreen()
+                    1 -> GroupGalleryScreen(viewModel)
+                    2 -> GroupChatScreen(viewModel)
                 }
             }
         }

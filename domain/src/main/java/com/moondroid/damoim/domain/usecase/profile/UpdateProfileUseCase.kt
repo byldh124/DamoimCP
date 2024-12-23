@@ -5,7 +5,7 @@ import java.io.File
 import javax.inject.Inject
 
 class UpdateProfileUseCase @Inject constructor(private val repository: ProfileRepository) {
-    suspend operator fun invoke(
+    operator fun invoke(
         name: String,
         birth: String,
         gender: String,

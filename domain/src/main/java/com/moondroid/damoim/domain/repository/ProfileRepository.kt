@@ -8,15 +8,15 @@ import java.io.File
 
 interface ProfileRepository {
 
-    suspend fun getProfile(): Flow<ApiResult<Profile>>
+    fun getProfile(): Flow<ApiResult<Profile>>
 
-    suspend fun updateToken(token: String): Flow<ApiResult<NoResult>>
+    fun updateToken(token: String): Flow<ApiResult<NoResult>>
 
-    suspend fun updateInterest(interest: String): Flow<ApiResult<NoResult>>
+    fun updateInterest(interest: String): Flow<ApiResult<NoResult>>
 
-    suspend fun deleteProfile(): Flow<ApiResult<NoResult>>
+    fun deleteProfile(): Flow<ApiResult<NoResult>>
 
-    suspend fun updateProfile(
+    fun updateProfile(
         name: String,
         birth: String,
         gender: String,

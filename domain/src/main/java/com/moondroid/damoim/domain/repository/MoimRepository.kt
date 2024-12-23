@@ -7,7 +7,7 @@ import com.moondroid.damoim.domain.model.status.ApiResult
 import kotlinx.coroutines.flow.Flow
 
 interface MoimRepository {
-    suspend fun createMoim(
+    fun createMoim(
         title: String,
         address: String,
         date: String,
@@ -18,9 +18,9 @@ interface MoimRepository {
         joinMember: String
     ): Flow<ApiResult<NoResult>>
 
-    suspend fun getMoims(title: String): Flow<ApiResult<List<MoimItem>>>
+    fun getMoims(title: String): Flow<ApiResult<List<MoimItem>>>
 
-    suspend fun getMoimMembers(joinMember: String) : Flow<ApiResult<List<Profile>>>
+    fun getMoimMembers(joinMember: String) : Flow<ApiResult<List<Profile>>>
 
-    suspend fun joinMoim(title: String, date: String) : Flow<ApiResult<MoimItem>>
+    fun joinMoim(title: String, date: String) : Flow<ApiResult<MoimItem>>
 }

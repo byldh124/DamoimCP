@@ -4,5 +4,5 @@ import com.moondroid.damoim.domain.repository.SignRepository
 import javax.inject.Inject
 
 class SignInUseCase @Inject constructor(private val repository: SignRepository) {
-    suspend operator fun invoke(id: String, hashPw: String) = repository.signIn(id, hashPw)
+    operator fun invoke(id: String, hashPw: String) = repository.signIn(id, hashPw)
 }

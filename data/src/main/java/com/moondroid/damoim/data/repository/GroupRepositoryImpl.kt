@@ -20,12 +20,12 @@ class GroupRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDatSource: LocalDataSource,
 ) : GroupRepository {
-    override suspend fun getGroupList(type: GroupType): Flow<ApiResult<List<GroupItem>>> = doInFlow {
+    override fun getGroupList(type: GroupType): Flow<ApiResult<List<GroupItem>>> = doInFlow {
         val id = localDatSource.getId()
         emit(remoteDataSource.getGroupList(id, type).convert { it.map { dto -> dto.toGroupItem() } })
     }
 
-    override suspend fun createGroup(
+    override fun createGroup(
         title: String,
         location: String,
         purpose: String,
@@ -45,7 +45,7 @@ class GroupRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateGroup(
+    override fun updateGroup(
         originTitle: String,
         title: String,
         location: String,
@@ -68,32 +68,32 @@ class GroupRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getGroupDetail(title: String): Flow<ApiResult<GroupItem>> {
+    override fun getGroupDetail(title: String): Flow<ApiResult<GroupItem>> {
         return doInFlow {
             emit(remoteDataSource.getGroupDetail(title).convert { it.toGroupItem() })
         }
     }
 
-    override suspend fun getMembers(title: String): Flow<ApiResult<List<Profile>>> = doInFlow {
+    override fun getMembers(title: String): Flow<ApiResult<List<Profile>>> = doInFlow {
         emit(remoteDataSource.getMembers(title).convert { it.map { dto -> dto.toProfile() } })
     }
 
-    override suspend fun saveRecent(title: String, lastTime: String): Flow<ApiResult<NoResult>> = doInFlow {
+    override fun saveRecent(title: String, lastTime: String): Flow<ApiResult<NoResult>> = doInFlow {
         val id = localDatSource.getId()
         emit(remoteDataSource.saveRecent(id, title, lastTime))
     }
 
-    override suspend fun join(title: String): Flow<ApiResult<NoResult>> = doInFlow {
+    override fun join(title: String): Flow<ApiResult<NoResult>> = doInFlow {
         val id = localDatSource.getId()
         emit(remoteDataSource.joinGroup(id, title))
     }
 
-    override suspend fun getFavor(title: String): Flow<ApiResult<Boolean>> = doInFlow {
+    override fun getFavor(title: String): Flow<ApiResult<Boolean>> = doInFlow {
         val id = localDatSource.getId()
         emit(remoteDataSource.getFavor(id, title))
     }
 
-    override suspend fun setFavor(title: String, active: Boolean): Flow<ApiResult<NoResult>> = doInFlow {
+    override fun setFavor(title: String, active: Boolean): Flow<ApiResult<NoResult>> = doInFlow {
         val id = localDatSource.getId()
         emit(remoteDataSource.setFavor(id, title, active))
     }

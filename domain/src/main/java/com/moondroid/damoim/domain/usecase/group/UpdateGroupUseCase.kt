@@ -5,7 +5,7 @@ import java.io.File
 import javax.inject.Inject
 
 class UpdateGroupUseCase @Inject constructor(private val repository: GroupRepository) {
-    suspend operator fun invoke(
+    operator fun invoke(
         originTitle: String,
         title: String,
         location: String,

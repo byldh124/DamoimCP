@@ -21,7 +21,7 @@ class MoimRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource,
 ) : MoimRepository {
 
-    override suspend fun createMoim(
+    override fun createMoim(
         title: String,
         address: String,
         date: String,
@@ -36,16 +36,16 @@ class MoimRepositoryImpl @Inject constructor(
         emit(remoteDataSource.createMoim(request))
     }
 
-    override suspend fun getMoims(title: String): Flow<ApiResult<List<MoimItem>>> = doInFlow {
+    override fun getMoims(title: String): Flow<ApiResult<List<MoimItem>>> = doInFlow {
         emit(remoteDataSource.getMoims(title).convert { it.map { dto -> dto.toMoimItem() } })
     }
 
 
-    override suspend fun getMoimMembers(joinMember: String): Flow<ApiResult<List<Profile>>> = doInFlow {
+    override fun getMoimMembers(joinMember: String): Flow<ApiResult<List<Profile>>> = doInFlow {
         emit(remoteDataSource.getMoimMember(joinMember).convert { it.map { dto -> dto.toProfile() } })
     }
 
-    override suspend fun joinMoim(title: String, date: String): Flow<ApiResult<MoimItem>> = doInFlow {
+    override fun joinMoim(title: String, date: String): Flow<ApiResult<MoimItem>> = doInFlow {
         val id = localDataSource.getId()
         emit(remoteDataSource.joinMoim(id, title, date).convert { it.toMoimItem() })
     }

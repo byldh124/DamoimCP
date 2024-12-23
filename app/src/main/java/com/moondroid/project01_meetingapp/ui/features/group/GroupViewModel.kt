@@ -4,7 +4,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.google.firebase.database.ChildEvent
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.moondroid.damoim.common.constant.ResponseCode
+import com.moondroid.damoim.common.util.debug
+import com.moondroid.damoim.domain.model.ChatItem
 import com.moondroid.damoim.domain.model.status.onError
 import com.moondroid.damoim.domain.model.status.onFail
 import com.moondroid.damoim.domain.model.status.onSuccess
@@ -16,6 +23,7 @@ import com.moondroid.damoim.domain.usecase.group.SaveRecentUseCase
 import com.moondroid.damoim.domain.usecase.group.SetFavorUseCase
 import com.moondroid.damoim.domain.usecase.moim.GetMoimsUseCase
 import com.moondroid.damoim.domain.usecase.profile.DeleteProfileUseCase
+import com.moondroid.damoim.domain.usecase.profile.GetProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import com.moondroid.project01_meetingapp.core.navigation.GroupRoot
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +33,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GroupViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    private val getProfileUseCase: GetProfileUseCase,
     private val getGroupDetailUseCase: GetGroupDetailUseCase,
     private val getFavorUseCase: GetFavorUseCase,
     private val setFavorUseCase: SetFavorUseCase,
@@ -37,6 +46,7 @@ class GroupViewModel @Inject constructor(
 
     init {
         title.value = savedStateHandle.toRoute<GroupRoot>().title
+        getProfile()
         getGroupDetail()
         getMembers()
         getMoims()
@@ -44,11 +54,27 @@ class GroupViewModel @Inject constructor(
         saveRecent()
     }
 
+    private fun getProfile() {
+        viewModelScope.launch {
+            getProfileUseCase().collect { result ->
+                result.onSuccess {
+                    setState { copy(profile = it) }
+                }.onFail {
+                    setEffect(GroupContract.Effect.Expired)
+                }.onError {
+                    setEffect(GroupContract.Effect.Expired)
+                }
+            }
+        }
+    }
+
     override suspend fun handleEvent(event: GroupContract.Event) {
         when (event) {
             GroupContract.Event.Join -> TODO()
             is GroupContract.Event.UserProfile -> TODO()
             GroupContract.Event.ToggleFavor -> toggleFavor()
+            GroupContract.Event.ImageFetch -> getImage()
+            GroupContract.Event.ChatFetch -> chat()
         }
     }
 
@@ -128,5 +154,57 @@ class GroupViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun getImage() {
+        debug("getImage()")
+        val firebaseDB = FirebaseDatabase.getInstance()
+        val galleryRef = firebaseDB.getReference("GalleryImgs/${uiState.value.groupDetail.title}")
+        galleryRef.get().addOnSuccessListener {
+            val urlList = mutableListOf<String>()
+            it.children.forEach { ds ->
+                ds.getValue(String::class.java)?.let { url ->
+                    urlList.add(url)
+                }
+            }
+            setState { copy(images = urlList.toList()) }
+        }
+    }
+
+    private val chatListener = object : ChildEventListener {
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            snapshot.getValue(ChatItem::class.java)?.let { chat ->
+                val member = uiState.value.members.find { chat.id == it.id }
+                member?.let {
+                    chat.thumb = member.thumb
+                    chat.name = member.name
+                    chat.other = chat.id != uiState.value.profile.id
+                    uiState.value.chats.add(chat)
+                }
+            }
+        }
+
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+
+        }
+
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+
+        }
+
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+
+        }
+
+    }
+
+    private fun chat() {
+        val firebaseDB = FirebaseDatabase.getInstance()
+        val chatRef = firebaseDB.getReference("chat/" + uiState.value.groupDetail.title)
+        chatRef.addChildEventListener(chatListener)
     }
 }

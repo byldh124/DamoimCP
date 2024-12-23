@@ -20,27 +20,27 @@ class ProfileRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
 ) : ProfileRepository {
-    override suspend fun getProfile(): Flow<ApiResult<Profile>> = doInFlow {
+    override fun getProfile(): Flow<ApiResult<Profile>> = doInFlow {
         val profileEntity = localDataSource.getProfile() ?: throw DMException.ProfileException()
         emit(ApiResult.Success(profileEntity.toProfile()))
     }
 
-    override suspend fun updateToken(token: String): Flow<ApiResult<NoResult>> = doInFlow {
+    override fun updateToken(token: String): Flow<ApiResult<NoResult>> = doInFlow {
         val id = localDataSource.getId()
         emit(remoteDataSource.updateToken(UpdateTokenRequest(id, token)))
     }
 
 
-    override suspend fun updateInterest(interest: String): Flow<ApiResult<NoResult>> = doInFlow {
+    override fun updateInterest(interest: String): Flow<ApiResult<NoResult>> = doInFlow {
         val id = localDataSource.getId()
         emit(remoteDataSource.updateInterest(id, interest))
     }
 
-    override suspend fun deleteProfile(): Flow<ApiResult<Unit>> = doInFlow {
+    override fun deleteProfile(): Flow<ApiResult<Unit>> = doInFlow {
         emit(ApiResult.Success(localDataSource.deleteProfile()))
     }
 
-    override suspend fun updateProfile(
+    override fun updateProfile(
         name: String,
         birth: String,
         gender: String,
@@ -64,6 +64,7 @@ class ProfileRepositoryImpl @Inject constructor(
                     localDataSource.insertProfile(response.toProfileEntity())
                     emit(ApiResult.Success(response.toProfile()))
                 }
+
                 is ApiResult.SuccessWithoutResult -> emit(ApiResult.Error(DMException.NoResultException()))
 
                 is ApiResult.Error -> emit(ApiResult.Error(throwable))

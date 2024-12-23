@@ -4,5 +4,5 @@ import com.moondroid.damoim.domain.repository.GroupRepository
 import javax.inject.Inject
 
 class GetGroupDetailUseCase @Inject constructor(private val groupRepository: GroupRepository) {
-    suspend operator fun invoke(title: String) = groupRepository.getGroupDetail(title)
+    operator fun invoke(title: String) = groupRepository.getGroupDetail(title)
 }

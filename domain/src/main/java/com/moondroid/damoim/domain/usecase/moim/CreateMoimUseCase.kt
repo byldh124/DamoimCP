@@ -4,7 +4,7 @@ import com.moondroid.damoim.domain.repository.MoimRepository
 import javax.inject.Inject
 
 class CreateMoimUseCase @Inject constructor(private val repository: MoimRepository) {
-    suspend operator fun invoke(
+    operator fun invoke(
         title: String,
         address: String,
         date: String,

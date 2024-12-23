@@ -25,6 +25,7 @@ fun CustomButton(
     onLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    containerColor: Color = Red02
 ) {
     Card(
         modifier = modifier.combinedClickable(
@@ -34,7 +35,7 @@ fun CustomButton(
         ),
         colors = CardDefaults.cardColors(
 
-            containerColor = if (enabled) Red02 else Gray03
+            containerColor = if (enabled) containerColor else Gray03
         )
     ) {
         Box(
