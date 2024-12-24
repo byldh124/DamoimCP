@@ -68,7 +68,7 @@ class SignInViewModel @Inject constructor(
                     val hashPw = hashingPw(pw, it)
                     signIn(id, hashPw)
                 }.onFail {
-                    setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = "로그인 실패 [$it]") }
+                    setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = "로그인 실패 [${it.message}]") }
                 }.onError {
                     setState {
                         copy(
@@ -87,7 +87,12 @@ class SignInViewModel @Inject constructor(
             result.onSuccess {
                 setEffect(SignInContract.Effect.NavigateToHome)
             }.onFail {
-                setState { copy(concrete = SignInContract.State.Concrete.Error, errorMessage = "로그인 실패 [$it]") }
+                setState {
+                    copy(
+                        concrete = SignInContract.State.Concrete.Error,
+                        errorMessage = "로그인 실패 [${it.message}]"
+                    )
+                }
             }.onError {
                 setState {
                     copy(
@@ -110,8 +115,22 @@ class SignInViewModel @Inject constructor(
                 result.onSuccess {
                     setEffect(SignInContract.Effect.NavigateToHome)
                 }.onFail {
-                    if (it == ResponseCode.NOT_EXIST) {
+                    if (it.code == ResponseCode.NOT_EXIST) {
                         setEffect(SignInContract.Effect.NavigateToSignUp(socialSignData))
+                    } else {
+                        setState {
+                            copy(
+                                concrete = SignInContract.State.Concrete.Error,
+                                errorMessage = "로그인 실패 [${it.message}]"
+                            )
+                        }
+                    }
+                }.onError {
+                    setState {
+                        copy(
+                            concrete = SignInContract.State.Concrete.Error,
+                            errorMessage = it.javaClass.simpleName
+                        )
                     }
                 }
             }

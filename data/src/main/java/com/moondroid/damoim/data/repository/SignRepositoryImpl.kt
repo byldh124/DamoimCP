@@ -43,7 +43,7 @@ class SignRepositoryImpl @Inject constructor(
                 }
 
                 is ApiResult.Error -> emit(ApiResult.Error(throwable))
-                is ApiResult.Fail -> emit(ApiResult.Fail(code))
+                is ApiResult.Fail -> emit(ApiResult.Fail(fail))
                 is ApiResult.SuccessWithoutResult -> emit(ApiResult.Error(DMException.NoResultException()))
             }
         }
@@ -59,7 +59,7 @@ class SignRepositoryImpl @Inject constructor(
                 }
 
                 is ApiResult.Error -> emit(ApiResult.Error(throwable))
-                is ApiResult.Fail -> emit(ApiResult.Fail(code))
+                is ApiResult.Fail -> emit(ApiResult.Fail(fail))
                 is ApiResult.SuccessWithoutResult -> emit(ApiResult.Error(DMException.NoResultException()))
             }
         }
@@ -75,7 +75,7 @@ class SignRepositoryImpl @Inject constructor(
                 }
 
                 is ApiResult.Error -> emit(ApiResult.Error(throwable))
-                is ApiResult.Fail -> emit(ApiResult.Fail(code))
+                is ApiResult.Fail -> emit(ApiResult.Fail(fail))
                 is ApiResult.SuccessWithoutResult -> emit(ApiResult.Error(DMException.NoResultException()))
             }
         }

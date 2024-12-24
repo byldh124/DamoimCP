@@ -1,6 +1,7 @@
 package com.moondroid.project01_meetingapp.ui.features.home.composable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,9 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -39,8 +38,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,7 +54,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.moondroid.damoim.common.util.debug
 import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeList
@@ -70,6 +68,7 @@ import com.moondroid.project01_meetingapp.ui.features.home.composable.pager.MyGr
 import com.moondroid.project01_meetingapp.ui.features.home.composable.pager.SearchScreen
 import com.moondroid.project01_meetingapp.ui.features.home.homeRoutes
 import com.moondroid.project01_meetingapp.ui.theme.Gray03
+import com.moondroid.project01_meetingapp.ui.theme.Gray04
 import com.moondroid.project01_meetingapp.ui.theme.Mint01
 import com.moondroid.project01_meetingapp.ui.theme.Red02
 import com.moondroid.project01_meetingapp.ui.theme.Typography
@@ -193,16 +192,6 @@ private fun HomeRootBody(
                         )
                     }
                 },
-                actions = {
-                    IconButton({
-                        navigateToSetting()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Build,
-                            contentDescription = "뒤로가기",
-                        )
-                    }
-                }
             )
         },
         bottomBar = {
@@ -264,23 +253,22 @@ private fun HomeBottomNavigation(navController: NavController, onItemClick: (Hom
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar {
+    NavigationBar(
+        containerColor = Color.Transparent,
+        modifier = Modifier.border(0.3.dp, Gray04)
+    ) {
         homeRoutes.forEach { topLevelRoute ->
             NavigationBarItem(
                 icon = {
-                    Icon(
-                        modifier = Modifier.width(24.dp),
-                        imageVector = topLevelRoute.icon,
-                        contentDescription = topLevelRoute.name
-                    )
+                    Icon(painterResource(topLevelRoute.drawable), topLevelRoute.name)
                 },
-                label = { Text(topLevelRoute.name, fontSize = 14.sp) },
+                label = { Text(topLevelRoute.name, fontSize = 12.sp, style = Typography.bodyMedium) },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Red02,
                     selectedTextColor = Red02,
                     unselectedIconColor = Gray03,
                     unselectedTextColor = Gray03,
-                    //indicatorColor = Red04
+                    indicatorColor = Color.Transparent,
                 ),
                 selected = currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) } == true,
                 onClick = {

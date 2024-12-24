@@ -30,7 +30,6 @@ interface GroupContract {
         data object ToggleFavor: Event
         data object ImageFetch: Event
         data object ChatFetch: Event
-        data class UserProfile(val id: String): Event
     }
 
     sealed interface Effect : UiEffect {

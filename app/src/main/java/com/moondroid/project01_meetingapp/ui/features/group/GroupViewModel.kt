@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.google.firebase.database.ChildEvent
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -19,10 +18,10 @@ import com.moondroid.damoim.domain.model.status.onSuccessWithoutResult
 import com.moondroid.damoim.domain.usecase.group.GetFavorUseCase
 import com.moondroid.damoim.domain.usecase.group.GetGroupDetailUseCase
 import com.moondroid.damoim.domain.usecase.group.GetMembersUseCase
+import com.moondroid.damoim.domain.usecase.group.JoinGroupUseCase
 import com.moondroid.damoim.domain.usecase.group.SaveRecentUseCase
 import com.moondroid.damoim.domain.usecase.group.SetFavorUseCase
 import com.moondroid.damoim.domain.usecase.moim.GetMoimsUseCase
-import com.moondroid.damoim.domain.usecase.profile.DeleteProfileUseCase
 import com.moondroid.damoim.domain.usecase.profile.GetProfileUseCase
 import com.moondroid.project01_meetingapp.core.base.BaseViewModel
 import com.moondroid.project01_meetingapp.core.navigation.GroupRoot
@@ -40,6 +39,7 @@ class GroupViewModel @Inject constructor(
     private val saveRecentUseCase: SaveRecentUseCase,
     private val getMembersUseCase: GetMembersUseCase,
     private val getMoimsUseCase: GetMoimsUseCase,
+    private val joinGroupUseCase: JoinGroupUseCase,
 ) : BaseViewModel<GroupContract.State, GroupContract.Event, GroupContract.Effect>(GroupContract.State()) {
 
     val title = mutableStateOf("")
@@ -60,7 +60,11 @@ class GroupViewModel @Inject constructor(
                 result.onSuccess {
                     setState { copy(profile = it) }
                 }.onFail {
-                    setEffect(GroupContract.Effect.Expired)
+                    if (it.code == ResponseCode.PROFILE_ERROR) {
+                        setEffect(GroupContract.Effect.Expired)
+                    } else {
+                        setState { copy(concrete = GroupContract.State.Concrete.Error, errorMessage = it.message) }
+                    }
                 }.onError {
                     setEffect(GroupContract.Effect.Expired)
                 }
@@ -70,8 +74,7 @@ class GroupViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: GroupContract.Event) {
         when (event) {
-            GroupContract.Event.Join -> TODO()
-            is GroupContract.Event.UserProfile -> TODO()
+            GroupContract.Event.Join -> joinGroup()
             GroupContract.Event.ToggleFavor -> toggleFavor()
             GroupContract.Event.ImageFetch -> getImage()
             GroupContract.Event.ChatFetch -> chat()
@@ -84,7 +87,11 @@ class GroupViewModel @Inject constructor(
                 result.onSuccess {
                     setState { copy(groupDetail = it) }
                 }.onFail {
-                    setEffect(GroupContract.Effect.Expired)
+                    if (it.code == ResponseCode.PROFILE_ERROR) {
+                        setEffect(GroupContract.Effect.Expired)
+                    } else {
+                        setState { copy(concrete = GroupContract.State.Concrete.Error, errorMessage = it.message) }
+                    }
                 }.onError {
 
                 }
@@ -98,7 +105,11 @@ class GroupViewModel @Inject constructor(
                 result.onSuccess {
                     setState { copy(members = it) }
                 }.onFail {
-                    setEffect(GroupContract.Effect.Expired)
+                    if (it.code == ResponseCode.PROFILE_ERROR) {
+                        setEffect(GroupContract.Effect.Expired)
+                    } else {
+                        setState { copy(concrete = GroupContract.State.Concrete.Error, errorMessage = it.message) }
+                    }
                 }.onError {
 
                 }
@@ -112,7 +123,11 @@ class GroupViewModel @Inject constructor(
                 result.onSuccess {
                     setState { copy(moims = it) }
                 }.onFail {
-                    setEffect(GroupContract.Effect.Expired)
+                    if (it.code == ResponseCode.PROFILE_ERROR) {
+                        setEffect(GroupContract.Effect.Expired)
+                    } else {
+                        setState { copy(concrete = GroupContract.State.Concrete.Error, errorMessage = it.message) }
+                    }
                 }.onError {
 
                 }
@@ -128,7 +143,11 @@ class GroupViewModel @Inject constructor(
                 }.onError {
 
                 }.onFail {
-                    setEffect(GroupContract.Effect.Expired)
+                    if (it.code == ResponseCode.PROFILE_ERROR) {
+                        setEffect(GroupContract.Effect.Expired)
+                    } else {
+                        setState { copy(concrete = GroupContract.State.Concrete.Error, errorMessage = it.message) }
+                    }
                 }
             }
         }
@@ -148,8 +167,10 @@ class GroupViewModel @Inject constructor(
         viewModelScope.launch {
             saveRecentUseCase(title.value, System.currentTimeMillis().toString()).collect { result ->
                 result.onFail {
-                    if (it == ResponseCode.PROFILE_ERROR) {
+                    if (it.code == ResponseCode.PROFILE_ERROR) {
                         setEffect(GroupContract.Effect.Expired)
+                    } else {
+                        setState { copy(concrete = GroupContract.State.Concrete.Error, errorMessage = it.message) }
                     }
                 }
             }
@@ -206,5 +227,21 @@ class GroupViewModel @Inject constructor(
         val firebaseDB = FirebaseDatabase.getInstance()
         val chatRef = firebaseDB.getReference("chat/" + uiState.value.groupDetail.title)
         chatRef.addChildEventListener(chatListener)
+    }
+
+    private suspend fun joinGroup() {
+        joinGroupUseCase(uiState.value.groupDetail.title).collect { result ->
+            result.onSuccessWithoutResult {
+                getMembers()
+            }.onError {
+                error(it.toString())
+            }.onFail {
+                if (it.code == ResponseCode.PROFILE_ERROR) {
+                    setEffect(GroupContract.Effect.Expired)
+                } else {
+                    setState { copy(concrete = GroupContract.State.Concrete.Error, errorMessage = it.message) }
+                }
+            }
+        }
     }
 }

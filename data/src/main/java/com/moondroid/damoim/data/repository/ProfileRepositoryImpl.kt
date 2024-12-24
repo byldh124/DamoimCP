@@ -68,7 +68,7 @@ class ProfileRepositoryImpl @Inject constructor(
                 is ApiResult.SuccessWithoutResult -> emit(ApiResult.Error(DMException.NoResultException()))
 
                 is ApiResult.Error -> emit(ApiResult.Error(throwable))
-                is ApiResult.Fail -> emit(ApiResult.Fail(code))
+                is ApiResult.Fail -> emit(ApiResult.Fail(fail))
             }
         }
     }

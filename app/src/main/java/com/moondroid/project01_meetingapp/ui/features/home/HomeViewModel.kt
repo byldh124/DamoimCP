@@ -57,14 +57,14 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }.onFail {
-                when (it) {
+                when (it.code) {
                     ResponseCode.PROFILE_ERROR -> {
                         setEffect(HomeContract.Effect.Expired)
                     }
 
                     else -> setState {
                         copy(
-                            errorMessage = "에러 : $it",
+                            errorMessage = "서버 에러 : ${it.message}",
                             concrete = HomeContract.State.Concrete.Error,
                             retryType = HomeContract.Event.Fetch(groupType)
                         )

@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
+data class FailResponse(val code: Int, val message: String) {}
+
+
 sealed class ApiResult<out T> {
     class SuccessWithoutResult<out T> : ApiResult<T>()
 
@@ -17,7 +20,7 @@ sealed class ApiResult<out T> {
     data class Success<out T>(val response: T) : ApiResult<T>()
 
     //ResponseCode = 1000(x)
-    data class Fail<T>(val code: Int) : ApiResult<T>()
+    data class Fail<T>(val fail: FailResponse) : ApiResult<T>()
 
     //통신 에러
     data class Error<T>(val throwable: Throwable) : ApiResult<T>()
@@ -25,7 +28,7 @@ sealed class ApiResult<out T> {
     inline fun <D> convert(mapper: (T) -> D): ApiResult<D> {
         return when (this) {
             is Error -> Error(throwable)
-            is Fail -> Fail(code)
+            is Fail -> Fail(fail)
             is SuccessWithoutResult -> SuccessWithoutResult()
             is Success -> Success(mapper(response))
         }
@@ -42,8 +45,8 @@ inline fun <T> ApiResult<T>.onSuccess(action: (T) -> Unit): ApiResult<T> {
     return this
 }
 
-inline fun <T> ApiResult<T>.onFail(action: (Int) -> Unit): ApiResult<T> {
-    if (this is ApiResult.Fail) action(code)
+inline fun <T> ApiResult<T>.onFail(action: (FailResponse) -> Unit): ApiResult<T> {
+    if (this is ApiResult.Fail) action(fail)
     return this
 }
 
@@ -58,7 +61,10 @@ fun <T> doInFlow(scope: suspend FlowCollector<ApiResult<T>>.() -> Unit): Flow<Ap
     }.catch {
         debug("logException: ${it.stackTraceToString()}")
         when (it) {
-            is DMException.ProfileException -> emit(ApiResult.Fail(ResponseCode.PROFILE_ERROR))
+            is DMException.ProfileException -> {
+                emit(ApiResult.Fail(FailResponse(ResponseCode.PROFILE_ERROR, "액세스 토큰 만료")))
+            }
+
             else -> emit(ApiResult.Error(it))
         }
     }.flowOn(Dispatchers.IO)

@@ -2,6 +2,7 @@ package com.moondroid.damoim.data.model.response
 
 import com.moondroid.damoim.common.constant.ResponseCode
 import com.moondroid.damoim.domain.model.status.ApiResult
+import com.moondroid.damoim.domain.model.status.FailResponse
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -20,7 +21,7 @@ inline fun <reified T> BaseResponse<T>.toApiResult(): ApiResult<T> {
                 ApiResult.SuccessWithoutResult()
             }
         } else {
-            ApiResult.Fail(code)
+            ApiResult.Fail(FailResponse( code, message.toString()))
         }
     } catch (e: Exception) {
         ApiResult.Error(e)
