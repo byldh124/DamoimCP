@@ -20,9 +20,15 @@ class GroupRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDatSource: LocalDataSource,
 ) : GroupRepository {
-    override fun getGroupList(type: GroupType): Flow<ApiResult<List<GroupItem>>> = doInFlow {
+    override fun getUserGroupList(type: GroupType): Flow<ApiResult<List<GroupItem>>> = doInFlow {
         val id = localDatSource.getId()
         emit(remoteDataSource.getGroupList(id, type).convert { it.map { dto -> dto.toGroupItem() } })
+    }
+
+    override fun getUserGroupList(id: String): Flow<ApiResult<List<GroupItem>>> {
+        return doInFlow {
+            emit(remoteDataSource.getGroupList(id, GroupType.MY_GROUP).convert { it.map { dto -> dto.toGroupItem() } })
+        }
     }
 
     override fun createGroup(

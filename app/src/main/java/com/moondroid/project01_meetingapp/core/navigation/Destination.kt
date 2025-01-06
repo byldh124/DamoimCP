@@ -50,6 +50,9 @@ data class GroupRoot(val title: String): Destination
 @Serializable
 object MyInfo: Destination
 
+@Serializable
+data class UserProfile(val id: String): Destination
+
 
 
 

@@ -1,5 +1,6 @@
 package com.moondroid.project01_meetingapp.ui.features.home.composable
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -55,6 +56,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.moondroid.damoim.domain.model.Profile
+import com.moondroid.project01_meetingapp.R
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeList
 import com.moondroid.project01_meetingapp.ui.features.home.HomeMap
@@ -70,6 +72,8 @@ import com.moondroid.project01_meetingapp.ui.features.home.homeRoutes
 import com.moondroid.project01_meetingapp.ui.theme.Gray03
 import com.moondroid.project01_meetingapp.ui.theme.Gray04
 import com.moondroid.project01_meetingapp.ui.theme.Mint01
+import com.moondroid.project01_meetingapp.ui.theme.Pastel01
+import com.moondroid.project01_meetingapp.ui.theme.Pastel02
 import com.moondroid.project01_meetingapp.ui.theme.Red02
 import com.moondroid.project01_meetingapp.ui.theme.Typography
 import kotlinx.coroutines.launch
@@ -99,12 +103,24 @@ fun HomeRootScreen(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            HomeDrawer(uiState.profile) {
-                scope.launch {
-                    drawerState.close()
-                }
-                navigateToMyInfo()
-            }
+            HomeDrawer(
+                uiState.profile,
+                navigateToMyInfo = {
+                    scope.launch {
+                        drawerState.close()
+                    }
+                    navigateToMyInfo()
+                }, navigateToInterest = {
+                    scope.launch {
+                        drawerState.close()
+                    }
+                    navigateToInterest()
+                }, navigateToSetting = {
+                    scope.launch {
+                        drawerState.close()
+                    }
+                    navigateToSetting()
+                })
         }
     ) {
         HomeRootBody(drawerState, viewModel, navigateToSetting = { navigateToSetting() }) {
@@ -114,9 +130,11 @@ fun HomeRootScreen(
 }
 
 @Composable
-private fun HomeDrawer(profile: Profile, navigateToMyInfo: () -> Unit) {
+private fun HomeDrawer(profile: Profile, navigateToMyInfo: () -> Unit, navigateToInterest: () -> Unit, navigateToSetting: () -> Unit) {
     ModalDrawerSheet {
         HomeDrawerHeader(profile, navigateToMyInfo)
+        HomeDrawerItem(R.drawable.ic_interest, Pastel01, "관심사 변경", navigateToInterest)
+        HomeDrawerItem(R.drawable.ic_setting, Pastel02, "설정", navigateToSetting)
     }
 }
 
@@ -155,6 +173,20 @@ private fun HomeDrawerHeader(profile: Profile, navigateToMyInfo: () -> Unit) {
             Text(profile.name, style = Typography.bodyMedium)
             Spacer(Modifier.height(10.dp))
             Text(profile.message, style = Typography.bodySmall)
+        }
+    }
+}
+
+@Composable
+private fun HomeDrawerItem(@DrawableRes drawableId: Int, tint: Color, label: String, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier.clickable(onClick = onClick)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Icon(painterResource(drawableId), "icon", tint = tint)
+            Text(label)
         }
     }
 }

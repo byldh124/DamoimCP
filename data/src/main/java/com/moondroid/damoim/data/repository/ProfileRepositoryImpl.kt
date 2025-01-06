@@ -72,4 +72,10 @@ class ProfileRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun getUserProfile(id: String): Flow<ApiResult<Profile>> {
+        return doInFlow {
+            emit(remoteDataSource.getUserProfile(id).convert { it.toProfile() })
+        }
+    }
 }

@@ -64,7 +64,6 @@ fun <T> doInFlow(scope: suspend FlowCollector<ApiResult<T>>.() -> Unit): Flow<Ap
             is DMException.ProfileException -> {
                 emit(ApiResult.Fail(FailResponse(ResponseCode.PROFILE_ERROR, "액세스 토큰 만료")))
             }
-
             else -> emit(ApiResult.Error(it))
         }
     }.flowOn(Dispatchers.IO)

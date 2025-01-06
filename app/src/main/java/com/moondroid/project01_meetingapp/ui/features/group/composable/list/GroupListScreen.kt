@@ -13,12 +13,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.moondroid.damoim.domain.model.GroupItem
@@ -41,12 +44,12 @@ fun GroupListScreen(list: List<GroupItem>, onClick: (GroupItem) -> Unit) {
 
 @Composable
 fun GroupListItem(groupItem: GroupItem, onClick: (GroupItem) -> Unit) {
-    Card(
+    ElevatedCard(
         modifier = Modifier.padding(vertical = 5.dp),
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Container,
+            containerColor = Color(0xfff9f9f9)
         ),
         //border = BorderStroke(1.dp, Red02),
         onClick = {
@@ -78,4 +81,17 @@ fun GroupListItem(groupItem: GroupItem, onClick: (GroupItem) -> Unit) {
             }
         }
     }
+}
+
+@Preview(showBackground = true, heightDp = 80)
+@Composable
+fun GroupListItemPreview() {
+    GroupListItem(
+        GroupItem(
+            1,
+            "title",
+            "location",
+            "purpose",
+        )
+    ) { }
 }

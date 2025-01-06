@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,7 +43,7 @@ import com.moondroid.project01_meetingapp.ui.widget.CustomButton
 import kotlinx.coroutines.launch
 
 @Composable
-fun GroupDetailScreen(viewModel: GroupViewModel, navigateToUserProfile: (String) -> Unit) {
+fun GroupDetailScreen(viewModel: GroupViewModel, navigateToUserProfile: (userId: String) -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
@@ -128,16 +129,13 @@ fun MoimCard(moimItem: MoimItem) {
 
 @Composable
 fun MemberCard(member: Profile, isMaster: Boolean, onClick: () -> Unit) {
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Container,
-        ),
     ) {
         Box(
             modifier = Modifier

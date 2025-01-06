@@ -33,7 +33,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupRootScreen(navigateToSign: () -> Unit, navigateUp: () -> Unit) {
+fun GroupRootScreen(
+    navigateToSign: () -> Unit,
+    navigateToUserProfile: (userId: String) -> Unit,
+    navigateUp: () -> Unit
+) {
     val viewModel = hiltViewModel<GroupViewModel>()
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -93,9 +97,10 @@ fun GroupRootScreen(navigateToSign: () -> Unit, navigateUp: () -> Unit) {
             }
             HorizontalPager(state = pagerState, userScrollEnabled = false, modifier = Modifier.fillMaxSize()) {
                 when (it) {
-                    0 -> GroupDetailScreen(viewModel) {
-
+                    0 -> GroupDetailScreen(viewModel) { id ->
+                        navigateToUserProfile(id)
                     }
+
                     1 -> GroupGalleryScreen(viewModel)
                     2 -> GroupChatScreen(viewModel)
                 }

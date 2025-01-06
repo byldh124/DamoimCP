@@ -19,9 +19,16 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
+    primary = Red01,
+    secondary = Red02,
+    tertiary = Red03,
+    background = Color.White,
+    surface = Color.White,
+    surfaceContainerLow = Color.White,
+    surfaceContainerHigh = Color.White,
+    surfaceContainerHighest = Color.White,
+    onBackground = Gray01,
+    onSurface = Gray01
 
 
     /* Other default colors to override
@@ -54,10 +61,10 @@ fun DamoimCPTheme(
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
-        color = Container
+        color = Color(0xfff9f9f9)
     )
     MaterialTheme(
-        colorScheme = LightColorScheme,
+        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )

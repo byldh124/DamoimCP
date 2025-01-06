@@ -56,6 +56,10 @@ class RemoteDataSourceImpl @Inject constructor(private val api: ApiService) :
         thumb: File?,
     ): ApiResult<ProfileDTO> = api.updateProfile(body, thumb).toApiResult()
 
+    override suspend fun getUserProfile(id: String): ApiResult<ProfileDTO> {
+        return api.getUserProfile(id).toApiResult()
+    }
+
     override suspend fun getGroupList(id: String, type: GroupType): ApiResult<List<GroupItemDTO>> {
         val result = when (type) {
             GroupType.ALL -> api.getAllGroupList()

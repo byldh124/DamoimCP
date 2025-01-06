@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,9 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -97,11 +103,16 @@ fun SignInScreen(navigateToSignUp: (SocialSignData) -> Unit, navigateToHome: () 
                 .fillMaxWidth()
         ) {
             Text("모임대장에서 새로운 모임을 시작하세요.", style = Typography.bodyMedium)
-            AsyncImage(
-                modifier = Modifier.weight(1.0f),
-                model = R.drawable.image_login,
-                contentDescription = "로그인 화면"
-            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(), contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = R.drawable.image_login,
+                    contentDescription = "로그인 화면"
+                )
+            }
             Text("이미 모임대장의 회원이신가요?", style = Typography.bodyMedium)
             CustomTextField(
                 value = uiState.id,
@@ -166,19 +177,18 @@ fun SignInScreen(navigateToSignUp: (SocialSignData) -> Unit, navigateToHome: () 
                     contentDescription = "구글 로그인"
                 )
             }
-            Row(
-                modifier = Modifier
-                    .clickable {
-                        navigateToSignUp(SocialSignData())
-                    }
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text("아직 모임대장의 회원이 아니시면 ", style = Typography.bodyMedium)
-                Text("\'여기\'", style = Typography.bodyMedium, color = Red01)
-                Text("를 눌러주세요.", style = Typography.bodyMedium)
-            }
+
+            Text(buildAnnotatedString {
+                withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                    append("모임대장의 회원이 아니시면")
+                }
+                withStyle(style = SpanStyle(color = Red01)) {
+                    append(" \'여기\' ")
+                }
+                withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                    append("를 눌러주세요.")
+                }
+            })
         }
 
         if (uiState.concrete == SignInContract.State.Concrete.Loading) {

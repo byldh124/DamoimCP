@@ -18,6 +18,7 @@ import com.moondroid.project01_meetingapp.ui.features.sign.signin.composable.Sig
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.composable.SignUpScreen
 import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 import com.moondroid.project01_meetingapp.ui.features.user.myinfo.composable.MyInfoScreen
+import com.moondroid.project01_meetingapp.ui.features.user.profile.composable.ProfileScreen
 import kotlin.reflect.typeOf
 
 @Composable
@@ -54,6 +55,19 @@ fun AppNavGraph() {
         composable<ImageList> { backStackEntry ->
             val imageList: ImageList = backStackEntry.toRoute()
             ImageListScreen(imageList.aspectRatio, navController)
+        }
+
+        composable<UserProfile> {
+            ProfileScreen(
+                navigateToGroup = {
+                    navController.navigate(GroupRoot(it)) {
+                        popUpTo<Group> { inclusive = true }
+                    }
+                },
+                navigateUp = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         navigation<Sign>(startDestination = SignIn::class) {
@@ -124,6 +138,9 @@ fun AppNavGraph() {
                         navController.navigate(Sign) {
                             popUpTo<App> { inclusive = true }
                         }
+                    },
+                    navigateToUserProfile = {
+                        navController.navigate(UserProfile(it))
                     },
                     navigateUp = { navController.navigateUp() }
                 )

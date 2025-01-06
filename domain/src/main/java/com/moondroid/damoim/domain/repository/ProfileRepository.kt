@@ -24,4 +24,6 @@ interface ProfileRepository {
         message: String,
         thumb: File?,
     ): Flow<ApiResult<Profile>>
+
+    fun getUserProfile(id: String) : Flow<ApiResult<Profile>>
 }

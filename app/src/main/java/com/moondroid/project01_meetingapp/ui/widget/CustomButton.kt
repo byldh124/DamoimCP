@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,14 +28,13 @@ fun CustomButton(
     enabled: Boolean = true,
     containerColor: Color = Red02
 ) {
-    Card(
+    ElevatedCard(
         modifier = modifier.combinedClickable(
             onClick = onClick,
             onLongClick = onLongClick,
             enabled = enabled,
         ),
         colors = CardDefaults.cardColors(
-
             containerColor = if (enabled) containerColor else Gray03
         )
     ) {
@@ -44,7 +44,7 @@ fun CustomButton(
                 .padding(vertical = 15.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(content, style = Typography.titleMedium, color = Color.White)
+            Text(content, style = Typography.titleLarge, color = Color.White)
         }
     }
 }

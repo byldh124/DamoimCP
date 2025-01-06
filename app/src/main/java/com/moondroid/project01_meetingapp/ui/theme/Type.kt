@@ -27,7 +27,7 @@ val Typography = Typography(
         fontFamily = FontFamily(Font(R.font.nanum_square_round_r)),
         fontSize = 14.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.5.sp,
     ),
 
     titleLarge = TextStyle(

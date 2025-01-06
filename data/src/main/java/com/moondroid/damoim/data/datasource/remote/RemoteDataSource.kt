@@ -33,6 +33,7 @@ interface RemoteDataSource {
         body: Map<String, String>,
         thumb: File?,
     ): ApiResult<ProfileDTO>
+    suspend fun getUserProfile(id: String): ApiResult<ProfileDTO>
 
     //Group
     suspend fun getGroupList(id: String, type: GroupType): ApiResult<List<GroupItemDTO>>

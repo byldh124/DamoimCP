@@ -26,6 +26,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ApiService @Inject constructor(private val client: HttpClient) {
+
     suspend fun checkAppVersion(
         packageName: String,
         versionCode: Int,
@@ -258,6 +259,14 @@ class ApiService @Inject constructor(private val client: HttpClient) {
                 parameters.append(RequestParam.ID, id)
                 parameters.append(RequestParam.TITLE, title)
                 parameters.append(RequestParam.DATE, date)
+            }
+        }.parseBody()
+    }
+
+    suspend fun getUserProfile(id: String) : BaseResponse<ProfileDTO> {
+        return client.get(URLManager.USER_PROFILE) {
+            url {
+                parameters.append(RequestParam.ID, id)
             }
         }.parseBody()
     }

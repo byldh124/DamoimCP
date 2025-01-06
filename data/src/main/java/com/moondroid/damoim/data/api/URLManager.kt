@@ -41,6 +41,7 @@ object URLManager {
     const val UPDATE_TOKEN = "user/updateToken.php"
     const val UPDATE_PROFILE = "user/updateProfile.php"
     const val UPDATE_INTEREST = "user/updateInterest.php"
+    const val USER_PROFILE = "user/profile.php"
 
     /** 차단, 신고 **/
     const val BLOCK = "app/block.php"
