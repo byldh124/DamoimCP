@@ -19,12 +19,12 @@ val googleCredentialServerId: String = properties.getProperty("google.credential
 
 android {
     namespace = "com.moondroid.project01_meetingapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.moondroid.project01_meetingapp"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 33
         versionName = "3.0.0"
 

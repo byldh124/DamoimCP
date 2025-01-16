@@ -1,6 +1,7 @@
 package com.moondroid.project01_meetingapp.core.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -11,6 +12,7 @@ import com.moondroid.damoim.common.util.debug
 import com.moondroid.project01_meetingapp.ui.features.common.imagelist.composable.ImageListScreen
 import com.moondroid.project01_meetingapp.ui.features.common.interest.composable.InterestListScreen
 import com.moondroid.project01_meetingapp.ui.features.common.location.composable.LocationListScreen
+import com.moondroid.project01_meetingapp.ui.features.common.setting.composable.SettingScreen
 import com.moondroid.project01_meetingapp.ui.features.common.splash.composable.SplashScreen
 import com.moondroid.project01_meetingapp.ui.features.group.composable.GroupRootScreen
 import com.moondroid.project01_meetingapp.ui.features.home.composable.HomeRootScreen
@@ -21,6 +23,12 @@ import com.moondroid.project01_meetingapp.ui.features.user.myinfo.composable.MyI
 import com.moondroid.project01_meetingapp.ui.features.user.profile.composable.ProfileScreen
 import kotlin.reflect.typeOf
 
+
+/**
+ * Jetpack Compose 에서 백스택을 지우고 popUpTo/popBackStack을 포함하는 방법
+ * @link https://medium.com/@banmarkovic/jetpack-compose-clear-back-stack-popbackstack-inclusive-explained-14ee73a29df5
+ *
+ */
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
@@ -39,7 +47,7 @@ fun AppNavGraph() {
         composable<Splash> {
             SplashScreen(navigate = {
                 navController.navigate(it) {
-                    popUpTo(Splash) { inclusive = true }
+                    popUpTo(navController.graph.id)
                 }
             }, navigateUp = { navController.popBackStack() })
         }
@@ -70,6 +78,14 @@ fun AppNavGraph() {
             )
         }
 
+        composable<Setting> {
+            SettingScreen(navigateToSign = {
+                navController.navigate(Sign) {
+                    popUpTo(navController.graph.id)
+                }
+            }, navigateUp = { navController.navigateUp() })
+        }
+
         navigation<Sign>(startDestination = SignIn::class) {
             composable<SignIn> {
                 SignInScreen(
@@ -77,7 +93,7 @@ fun AppNavGraph() {
                         navController.navigate(SignUp(it))
                     }, navigateToHome = {
                         navController.navigate(Home) {
-                            popUpTo<Sign> { inclusive = true }
+                            popUpTo(navController.graph.id)
                         }
                     }
                 )
@@ -96,7 +112,7 @@ fun AppNavGraph() {
                     },
                     navigateToHome = {
                         navController.navigate(Home) {
-                            popUpTo<Sign> { inclusive = true }
+                            popUpTo(navController.graph.id)
                         }
                     },
                     navigateUp = {
@@ -117,15 +133,14 @@ fun AppNavGraph() {
                     },
                     navigateToSign = {
                         navController.navigate(Sign) {
-                            popUpTo<App> { inclusive = true }
+                            popUpTo(navController.graph.id)
                         }
                     },
                     navigateToInterest = {
                         navController.navigate(InterestList)
                     },
                     navigateToSetting = {
-                        debug("navigateToSetting")
-                        navController.popBackStack()
+                        navController.navigate(Setting)
                     }
                 )
             }
@@ -136,7 +151,7 @@ fun AppNavGraph() {
                 GroupRootScreen(
                     navigateToSign = {
                         navController.navigate(Sign) {
-                            popUpTo<App> { inclusive = true }
+                            popUpTo(navController.graph.id)
                         }
                     },
                     navigateToUserProfile = {

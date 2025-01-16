@@ -4,9 +4,6 @@ import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignData
 import kotlinx.serialization.Serializable
 
 interface Destination
-@Serializable
-object App: Destination
-
 // common destination
 @Serializable
 object Splash : Destination
@@ -19,6 +16,9 @@ object LocationList : Destination
 
 @Serializable
 data class ImageList(val aspectRatio: Int): Destination
+
+@Serializable
+object Setting : Destination
 
 
 // sign destination

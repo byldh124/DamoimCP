@@ -21,5 +21,5 @@ interface SignRepository {
     fun signIn(id: String, hashPw: String): Flow<ApiResult<Profile>>
     fun getSalt(id: String): Flow<ApiResult<String>>
     fun socialSign(id: String): Flow<ApiResult<Profile>>
-    fun resign(id: String): Flow<ApiResult<NoResult>>
+    fun resign(): Flow<ApiResult<NoResult>>
 }

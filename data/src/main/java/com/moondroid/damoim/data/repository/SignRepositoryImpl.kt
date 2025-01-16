@@ -81,7 +81,8 @@ class SignRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun resign(id: String): Flow<ApiResult<NoResult>> = doInFlow {
+    override fun resign(): Flow<ApiResult<NoResult>> = doInFlow {
+        val id = localDataSource.getId()
         emit(remoteDataSource.resign(id))
     }
 
