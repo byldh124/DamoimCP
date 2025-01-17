@@ -4,7 +4,7 @@ import com.moondroid.damoim.domain.repository.GroupRepository
 import java.io.File
 import javax.inject.Inject
 
-class CreateGroupUseCase @Inject constructor(private val repository: GroupRepository) {
+class AddGroupUseCase @Inject constructor(private val repository: GroupRepository) {
     operator fun invoke(
         title: String,
         location: String,

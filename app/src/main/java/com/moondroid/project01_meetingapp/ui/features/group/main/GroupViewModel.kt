@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.features.group
+package com.moondroid.project01_meetingapp.ui.features.group.main
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle

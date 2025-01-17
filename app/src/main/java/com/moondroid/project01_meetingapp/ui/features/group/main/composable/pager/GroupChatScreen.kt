@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.features.group.composable.pager
+package com.moondroid.project01_meetingapp.ui.features.group.main.composable.pager
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,10 +24,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.moondroid.damoim.common.util.debug
 import com.moondroid.damoim.domain.model.ChatItem
-import com.moondroid.project01_meetingapp.ui.features.group.GroupContract
-import com.moondroid.project01_meetingapp.ui.features.group.GroupViewModel
+import com.moondroid.project01_meetingapp.ui.features.group.main.GroupContract
+import com.moondroid.project01_meetingapp.ui.features.group.main.GroupViewModel
 import com.moondroid.project01_meetingapp.ui.theme.Red02
 
 @Composable

@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.moondroid.damoim.domain.model.Profile
-import com.moondroid.project01_meetingapp.ui.features.group.composable.list.GroupListScreen
+import com.moondroid.project01_meetingapp.ui.features.group.list.GroupListScreen
 import com.moondroid.project01_meetingapp.ui.features.user.profile.ProfileContract
 import com.moondroid.project01_meetingapp.ui.features.user.profile.ProfileViewModel
 import com.moondroid.project01_meetingapp.ui.theme.Mint01

@@ -35,10 +35,10 @@ class SplashViewModel @Inject constructor(
                 when (it.code) {
                     ResponseCode.INACTIVE -> setEffect(SplashContract.Effect.Update)
                     ResponseCode.NOT_EXIST -> setEffect(SplashContract.Effect.NotSupport)
-                    else -> setState(SplashContract.State.Fail("서버 오류 : ${it.message}"))
+                    else -> setState { SplashContract.State.Fail("서버 오류 : ${it.message}") }
                 }
             }.onError {
-                setState(SplashContract.State.Fail(it.javaClass.simpleName))
+                setState { SplashContract.State.Fail(it.javaClass.simpleName) }
             }
         }
     }

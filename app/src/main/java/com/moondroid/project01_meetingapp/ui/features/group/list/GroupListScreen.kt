@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.features.group.composable.list
+package com.moondroid.project01_meetingapp.ui.features.group.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -81,17 +81,4 @@ fun GroupListItem(groupItem: GroupItem, onClick: (GroupItem) -> Unit) {
             }
         }
     }
-}
-
-@Preview(showBackground = true, heightDp = 80)
-@Composable
-fun GroupListItemPreview() {
-    GroupListItem(
-        GroupItem(
-            1,
-            "title",
-            "location",
-            "purpose",
-        )
-    ) { }
 }

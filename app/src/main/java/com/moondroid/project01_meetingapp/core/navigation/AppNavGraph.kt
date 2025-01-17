@@ -1,7 +1,6 @@
 package com.moondroid.project01_meetingapp.core.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -14,7 +13,7 @@ import com.moondroid.project01_meetingapp.ui.features.common.interest.composable
 import com.moondroid.project01_meetingapp.ui.features.common.location.composable.LocationListScreen
 import com.moondroid.project01_meetingapp.ui.features.common.setting.composable.SettingScreen
 import com.moondroid.project01_meetingapp.ui.features.common.splash.composable.SplashScreen
-import com.moondroid.project01_meetingapp.ui.features.group.composable.GroupRootScreen
+import com.moondroid.project01_meetingapp.ui.features.group.main.composable.GroupRootScreen
 import com.moondroid.project01_meetingapp.ui.features.home.composable.HomeRootScreen
 import com.moondroid.project01_meetingapp.ui.features.sign.signin.composable.SignInScreen
 import com.moondroid.project01_meetingapp.ui.features.sign.signup.composable.SignUpScreen

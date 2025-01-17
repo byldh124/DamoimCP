@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.features.group
+package com.moondroid.project01_meetingapp.ui.features.group.main
 
 import com.moondroid.damoim.domain.model.ChatItem
 import com.moondroid.damoim.domain.model.GroupItem

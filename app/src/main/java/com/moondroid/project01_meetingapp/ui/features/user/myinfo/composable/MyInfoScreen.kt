@@ -52,6 +52,7 @@ import com.moondroid.project01_meetingapp.ui.widget.GenderRadioButton
 import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
 import com.moondroid.project01_meetingapp.ui.widget.PositiveButton
 import com.moondroid.project01_meetingapp.utils.ImageHelper
+import com.moondroid.project01_meetingapp.utils.rememberGalleryPermissionHelper
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -98,6 +99,12 @@ fun MyInfoScreen(
         }
     }
 
+    val permissionHelper = rememberGalleryPermissionHelper({
+        navigateToImageList()
+    }, {
+        isPermissionErrorDialogShow.value = true
+    })
+
     val showDateModal = remember { mutableStateOf(false) }
 
 
@@ -118,15 +125,18 @@ fun MyInfoScreen(
             ) {
                 if (uiState.uri != null) {
                     ProfileImage(uiState.uri) {
-                        checkPermission(context, requestPermissions) {
+                        /*checkPermission(context, requestPermissions) {
                             navigateToImageList()
-                        }
+                        }*/
+
+                        permissionHelper.checkGalleryPermission()
                     }
                 } else {
                     ProfileImage(uiState.imageUrl) {
-                        checkPermission(context, requestPermissions) {
+                        /*checkPermission(context, requestPermissions) {
                             navigateToImageList()
-                        }
+                        }*/
+                        permissionHelper.checkGalleryPermission()
                     }
                 }
             }

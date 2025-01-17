@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.features.group.composable.pager
+package com.moondroid.project01_meetingapp.ui.features.group.main.composable.pager
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,9 +15,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.moondroid.damoim.common.util.debug
-import com.moondroid.project01_meetingapp.ui.features.group.GroupContract
-import com.moondroid.project01_meetingapp.ui.features.group.GroupViewModel
+import com.moondroid.project01_meetingapp.ui.features.group.main.GroupContract
+import com.moondroid.project01_meetingapp.ui.features.group.main.GroupViewModel
 
 @Composable
 fun GroupGalleryScreen(viewModel: GroupViewModel) {

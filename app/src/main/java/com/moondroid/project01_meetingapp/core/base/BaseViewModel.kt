@@ -37,10 +37,6 @@ abstract class BaseViewModel<S : UiState, E : UiEvent, F : UiEffect>(initialStat
 
     protected abstract suspend fun handleEvent(event: E)
 
-    protected fun setState(state: S) {
-        _uiState.value = state
-    }
-
     protected fun setState(reduce: S.() -> S) {
         val state = currentState.reduce()
         _uiState.value = state

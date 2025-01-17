@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.features.group.composable
+package com.moondroid.project01_meetingapp.ui.features.group.main.composable
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,12 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moondroid.project01_meetingapp.R
-import com.moondroid.project01_meetingapp.ui.features.group.GroupContract
-import com.moondroid.project01_meetingapp.ui.features.group.GroupViewModel
-import com.moondroid.project01_meetingapp.ui.features.group.composable.pager.GroupChatScreen
-import com.moondroid.project01_meetingapp.ui.features.group.composable.pager.GroupDetailScreen
-import com.moondroid.project01_meetingapp.ui.features.group.composable.pager.GroupGalleryScreen
-import com.moondroid.project01_meetingapp.ui.features.group.groupRoutes
+import com.moondroid.project01_meetingapp.ui.features.group.main.GroupContract
+import com.moondroid.project01_meetingapp.ui.features.group.main.GroupViewModel
+import com.moondroid.project01_meetingapp.ui.features.group.main.groupRoutes
+import com.moondroid.project01_meetingapp.ui.features.group.main.composable.pager.GroupChatScreen
+import com.moondroid.project01_meetingapp.ui.features.group.main.composable.pager.GroupDetailScreen
+import com.moondroid.project01_meetingapp.ui.features.group.main.composable.pager.GroupGalleryScreen
 import com.moondroid.project01_meetingapp.ui.theme.Red02
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
 import kotlinx.coroutines.launch
