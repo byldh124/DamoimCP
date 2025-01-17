@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,8 +22,9 @@ import com.moondroid.project01_meetingapp.ui.features.group.composable.list.Grou
 import com.moondroid.project01_meetingapp.ui.features.home.HomeContract
 import com.moondroid.project01_meetingapp.ui.features.home.HomeViewModel
 import com.moondroid.project01_meetingapp.ui.theme.Red02
-import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
+import com.moondroid.project01_meetingapp.ui.widget.ButtonDialog
 import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
+import com.moondroid.project01_meetingapp.ui.widget.PositiveButton
 import kotlinx.coroutines.launch
 
 @Composable
@@ -44,16 +46,19 @@ fun HomeListScreen(viewModel: HomeViewModel, toGroupDetail: (String) -> Unit) {
         }
 
         if (uiState.concrete == HomeContract.State.Concrete.Error) {
-            CustomDialog(content = uiState.errorMessage) {
+            ButtonDialog(PositiveButton {
                 scope.launch {
                     viewModel.event.send(uiState.retryType)
                 }
+            }) {
+                Text(uiState.errorMessage)
             }
         }
 
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             contentAlignment = Alignment.BottomEnd,
         ) {
             FloatingActionButton(

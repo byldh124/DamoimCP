@@ -28,12 +28,13 @@ import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpViewMode
 import com.moondroid.project01_meetingapp.ui.theme.Red01
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
 import com.moondroid.project01_meetingapp.ui.widget.CustomButton
-import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
+import com.moondroid.project01_meetingapp.ui.widget.ButtonDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomText
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
 import com.moondroid.project01_meetingapp.ui.widget.DatePickerModal
 import com.moondroid.project01_meetingapp.ui.widget.GenderRadioButton
 import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
+import com.moondroid.project01_meetingapp.ui.widget.PositiveButton
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -98,10 +99,14 @@ fun SignUpScreen(
         }
 
         if (uiState.concrete == SignUpContract.State.Concrete.Error) {
-            CustomDialog(uiState.errorMessage, "에러", "재시도") {
+
+            ButtonDialog(PositiveButton("재시도") {
                 scope.launch {
                     viewModel.event.send(SignUpContract.Event.Retry)
                 }
+            }) {
+                Text("네트워크 에러")
+                Text(uiState.errorMessage)
             }
         }
     }

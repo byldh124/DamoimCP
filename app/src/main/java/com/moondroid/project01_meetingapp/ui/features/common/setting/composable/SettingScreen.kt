@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,10 +23,10 @@ import com.moondroid.project01_meetingapp.ui.features.common.setting.SettingView
 import com.moondroid.project01_meetingapp.ui.theme.Gray03
 import com.moondroid.project01_meetingapp.ui.theme.Red02
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
+import com.moondroid.project01_meetingapp.ui.widget.ButtonDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomButton
-import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
-import com.moondroid.project01_meetingapp.ui.widget.CustomDialog2
-import com.moondroid.project01_meetingapp.ui.widget.DialogButton
+import com.moondroid.project01_meetingapp.ui.widget.NegativeButton
+import com.moondroid.project01_meetingapp.ui.widget.PositiveButton
 import kotlinx.coroutines.launch
 
 @Composable
@@ -44,7 +45,6 @@ fun SettingScreen(navigateToSign: () -> Unit, navigateUp: () -> Unit) {
 
     val showLogoutDialog = remember { mutableStateOf(false) }
     val showResignDialog = remember { mutableStateOf(false) }
-
 
     BaseLayout(
         "설정", navigateUp
@@ -69,25 +69,31 @@ fun SettingScreen(navigateToSign: () -> Unit, navigateUp: () -> Unit) {
         }
 
         if (showLogoutDialog.value) {
-            CustomDialog2("로그아웃 하시겠습니까?", null, DialogButton("로그아웃") {
+
+            ButtonDialog(PositiveButton("로그아웃") {
                 showLogoutDialog.value = false
                 scope.launch {
                     viewModel.event.send(SettingContract.Event.Logout)
                 }
-            }, DialogButton("취소") {
+            }, NegativeButton {
                 showLogoutDialog.value = false
-            })
+            }) {
+                Text("로그아웃 하시겠습니까?")
+            }
         }
 
         if (showResignDialog.value) {
-            CustomDialog2("정말 회원탈퇴 하시겠습니까?", null, DialogButton("회원탈퇴") {
+
+            ButtonDialog(PositiveButton("회원탈퇴") {
                 showResignDialog.value = false
                 scope.launch {
                     viewModel.event.send(SettingContract.Event.Resign)
                 }
-            }, DialogButton("취소") {
+            }, NegativeButton {
                 showResignDialog.value = false
-            })
+            }) {
+                Text("회원탈퇴를 하시겠습니까?")
+            }
         }
 
         if (uiState is SettingContract.State.Loading) {
@@ -97,10 +103,16 @@ fun SettingScreen(navigateToSign: () -> Unit, navigateUp: () -> Unit) {
         }
 
         if (uiState is SettingContract.State.Error) {
-            CustomDialog((uiState as SettingContract.State.Error).message) {
+            ButtonDialog(PositiveButton {
                 scope.launch {
                     viewModel.event.send(SettingContract.Event.Retry)
                 }
+            }
+
+            ) {
+                Text("네트워크 에러")
+
+                Text((uiState as SettingContract.State.Error).message)
             }
         }
     }

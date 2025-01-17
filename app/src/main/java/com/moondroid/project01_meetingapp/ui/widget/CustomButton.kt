@@ -1,11 +1,11 @@
 package com.moondroid.project01_meetingapp.ui.widget
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
@@ -22,11 +22,11 @@ import com.moondroid.project01_meetingapp.ui.theme.Typography
 @Composable
 fun CustomButton(
     content: String,
-    onClick: () -> Unit,
-    onLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
+    containerColor: Color = Red02,
+    onLongClick: (() -> Unit)? = null,
     enabled: Boolean = true,
-    containerColor: Color = Red02
+    onClick: () -> Unit,
 ) {
     ElevatedCard(
         modifier = modifier.combinedClickable(

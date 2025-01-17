@@ -15,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
@@ -36,7 +35,6 @@ import com.moondroid.damoim.domain.model.Profile
 import com.moondroid.project01_meetingapp.R
 import com.moondroid.project01_meetingapp.ui.features.group.GroupContract
 import com.moondroid.project01_meetingapp.ui.features.group.GroupViewModel
-import com.moondroid.project01_meetingapp.ui.theme.Container
 import com.moondroid.project01_meetingapp.ui.theme.Red02
 import com.moondroid.project01_meetingapp.ui.theme.Typography
 import com.moondroid.project01_meetingapp.ui.widget.CustomButton
@@ -72,11 +70,11 @@ fun GroupDetailScreen(viewModel: GroupViewModel, navigateToUserProfile: (userId:
             Spacer(Modifier.height(16.dp))
 
             if (uiState.members.none { uiState.profile.id == it.id }) {
-                CustomButton("모임 가입", onClick = {
+                CustomButton("모임 가입") {
                     scope.launch {
                         viewModel.event.send(GroupContract.Event.Join)
                     }
-                })
+                }
                 Spacer(Modifier.height(16.dp))
             }
             Text(

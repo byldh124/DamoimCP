@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,9 +45,10 @@ import com.moondroid.project01_meetingapp.ui.features.sign.social.SocialSignEven
 import com.moondroid.project01_meetingapp.ui.theme.Red01
 import com.moondroid.project01_meetingapp.ui.theme.Typography
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
+import com.moondroid.project01_meetingapp.ui.widget.ButtonDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomButton
-import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
+import com.moondroid.project01_meetingapp.ui.widget.PositiveButton
 import kotlinx.coroutines.launch
 
 @Composable
@@ -141,12 +141,11 @@ fun SignInScreen(navigateToSignUp: (SocialSignData) -> Unit, navigateToHome: () 
             )
             Spacer(modifier = Modifier.height(10.dp))
 
-            CustomButton("로그인하기", onClick = {
+            CustomButton("로그인하기") {
                 scope.launch {
                     viewModel.event.send(SignInContract.Event.Sign)
                 }
-            })
-
+            }
 
             Row(
                 modifier = Modifier
@@ -198,10 +197,13 @@ fun SignInScreen(navigateToSignUp: (SocialSignData) -> Unit, navigateToHome: () 
         }
 
         if (uiState.concrete == SignInContract.State.Concrete.Error) {
-            CustomDialog(uiState.errorMessage, "에러", "재시도") {
+            ButtonDialog(PositiveButton("재시도") {
                 scope.launch {
                     viewModel.event.send(SignInContract.Event.Retry)
                 }
+            }) {
+                Text("서버에러")
+                Text(uiState.errorMessage)
             }
         }
     }

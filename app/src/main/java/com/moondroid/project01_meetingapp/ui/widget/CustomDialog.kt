@@ -2,12 +2,13 @@ package com.moondroid.project01_meetingapp.ui.widget
 
 import android.os.Build
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,15 +37,23 @@ import com.moondroid.project01_meetingapp.ui.theme.Blue01
 import com.moondroid.project01_meetingapp.ui.theme.Gray04
 import com.moondroid.project01_meetingapp.ui.theme.Typography
 
+abstract class DialogButton(open val text: String, open val onClick: () -> Unit)
+class PositiveButton(override val text: String = "확인", override val onClick: () -> Unit = {}) : DialogButton(text, onClick)
+class NegativeButton(override val text: String = "취소", override val onClick: () -> Unit = {}) : DialogButton(text, onClick)
+
 @Composable
-fun CustomDialog(content: String, title: String? = null, button: String = "확인", onDismiss: () -> Unit) {
-    Dialog(onDismissRequest = onDismiss) {
+fun ButtonDialog(
+    positiveButton: PositiveButton,
+    negativeButton: NegativeButton? = null,
+    contents :@Composable ColumnScope.() -> Unit
+) {
+    val onDismissRequest: (() -> Unit) = negativeButton?.onClick ?: positiveButton.onClick
+
+    Dialog(onDismissRequest = onDismissRequest) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            )
+            colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -53,74 +62,10 @@ fun CustomDialog(content: String, title: String? = null, button: String = "확�
                     modifier = Modifier
                         .padding(vertical = 30.dp, horizontal = 10.dp)
                         .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    if (!title.isNullOrEmpty()) {
-                        Text(title, fontSize = 20.sp, style = Typography.bodyLarge, textAlign = TextAlign.Center)
-                    }
-                    Spacer(Modifier.height(20.dp))
-                    Text(
-                        content,
-                        fontSize = 18.sp,
-                        style = Typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        lineHeight = 22.sp
-                    )
-                }
-
-                HorizontalDivider(color = Gray04, thickness = 1.dp)
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(onClick = onDismiss),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        button,
-                        fontSize = 20.sp,
-                        color = Blue01,
-                        style = Typography.bodyLarge,
-                        modifier = Modifier.padding(vertical = 20.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-class DialogButton(val text: String, val onClick: () -> Unit)
-
-@Composable
-fun CustomDialog2(content: String, title: String? = null, positiveButton: DialogButton, negativeButton: DialogButton) {
-    Dialog(onDismissRequest = negativeButton.onClick) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            )
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(vertical = 30.dp, horizontal = 10.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (!title.isNullOrEmpty()) {
-                        Text(title, fontSize = 20.sp, style = Typography.bodyLarge, textAlign = TextAlign.Center)
-                    }
-                    Spacer(Modifier.height(20.dp))
-                    Text(
-                        content,
-                        fontSize = 18.sp,
-                        style = Typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        lineHeight = 22.sp
-                    )
+                    contents()
                 }
 
                 HorizontalDivider(color = Gray04, thickness = 1.dp)
@@ -128,22 +73,26 @@ fun CustomDialog2(content: String, title: String? = null, positiveButton: Dialog
                 Row(
                     modifier = Modifier.height(intrinsicSize = IntrinsicSize.Min)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable(onClick = negativeButton.onClick),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            negativeButton.text,
-                            fontSize = 20.sp,
-                            color = Blue01,
-                            style = Typography.bodyLarge,
-                            modifier = Modifier.padding(vertical = 20.dp)
-                        )
+                    if (negativeButton != null) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable(onClick = negativeButton.onClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                negativeButton.text,
+                                fontSize = 20.sp,
+                                color = Blue01,
+                                style = Typography.bodyLarge,
+                                modifier = Modifier.padding(vertical = 20.dp)
+                            )
+                        }
                     }
 
-                    VerticalDivider(color = Gray04, thickness = 1.dp)
+                    if (negativeButton != null) {
+                        VerticalDivider(color = Gray04, thickness = 1.dp)
+                    }
 
                     Box(
                         modifier = Modifier
@@ -160,12 +109,10 @@ fun CustomDialog2(content: String, title: String? = null, positiveButton: Dialog
                         )
                     }
                 }
-
             }
         }
     }
 }
-
 
 @Composable
 fun LoadingDialog() {

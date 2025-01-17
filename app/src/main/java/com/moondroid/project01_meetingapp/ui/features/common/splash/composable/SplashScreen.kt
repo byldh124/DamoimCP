@@ -26,7 +26,8 @@ import com.moondroid.project01_meetingapp.core.navigation.Destination
 import com.moondroid.project01_meetingapp.ui.features.common.splash.SplashContract
 import com.moondroid.project01_meetingapp.ui.features.common.splash.SplashViewModel
 import com.moondroid.project01_meetingapp.ui.theme.Red01
-import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
+import com.moondroid.project01_meetingapp.ui.widget.ButtonDialog
+import com.moondroid.project01_meetingapp.ui.widget.PositiveButton
 import kotlinx.coroutines.launch
 
 @Composable
@@ -75,20 +76,22 @@ fun SplashScreen(navigate: (Destination) -> Unit, navigateUp: () -> Unit) {
             }
         }
         if (notSupportDialogShow.value) {
-            CustomDialog("해당버전이 존재하지 않습니다.") {
+            ButtonDialog(PositiveButton {
                 navigateUp()
+            }) {
+                Text("해당버전이 존재하지 않습니다.")
             }
         }
 
         if (updateDialogShow.value) {
-            CustomDialog("업데이트가 필요합니다.") {
-                try {
+            ButtonDialog(PositiveButton {
+                runCatching {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse("market://details?id=${mContext.packageName}")
                     mContext.startActivity(intent)
-                } catch (e: Exception) {
-                    logException(e)
                 }
+            }) {
+                Text("업데이트가 필요합니다.")
             }
         }
     }

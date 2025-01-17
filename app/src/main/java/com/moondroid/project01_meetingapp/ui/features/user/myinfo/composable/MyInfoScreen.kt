@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,19 +40,17 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import com.moondroid.damoim.common.util.debug
-import com.moondroid.project01_meetingapp.ui.features.sign.signup.SignUpContract
 import com.moondroid.project01_meetingapp.ui.features.user.myinfo.MyInfoContract
 import com.moondroid.project01_meetingapp.ui.features.user.myinfo.MyInfoViewModel
 import com.moondroid.project01_meetingapp.ui.widget.BaseLayout
 import com.moondroid.project01_meetingapp.ui.widget.CustomButton
-import com.moondroid.project01_meetingapp.ui.widget.CustomDialog
+import com.moondroid.project01_meetingapp.ui.widget.ButtonDialog
 import com.moondroid.project01_meetingapp.ui.widget.CustomText
 import com.moondroid.project01_meetingapp.ui.widget.CustomTextField
 import com.moondroid.project01_meetingapp.ui.widget.DatePickerModal
 import com.moondroid.project01_meetingapp.ui.widget.GenderRadioButton
 import com.moondroid.project01_meetingapp.ui.widget.LoadingDialog
+import com.moondroid.project01_meetingapp.ui.widget.PositiveButton
 import com.moondroid.project01_meetingapp.utils.ImageHelper
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -206,11 +205,12 @@ fun MyInfoScreen(
         }
 
         if (isPermissionErrorDialogShow.value) {
-            CustomDialog(
-                content = "저장소에 대한 접근 권한이 없어\n해당 기능을 사용할 수 없습니다.\n\n앱 설정에서 저장소에 대한 권한을 승인 후 다시 시도해주세요.",
-                title = "권한이 없습니다."
+            ButtonDialog(
+                PositiveButton {isPermissionErrorDialogShow.value = false}
+
             ) {
-                isPermissionErrorDialogShow.value = false
+                Text("권한이 없습니다.")
+                Text("저장소에 대한 접근 권한이 없어\n해당 기능을 사용할 수 없습니다.\n\n앱 설정에서 저장소에 대한 권한을 승인 후 다시 시도해주세요.")
             }
         }
 
@@ -219,24 +219,30 @@ fun MyInfoScreen(
         }
 
         if (uiState.concrete == MyInfoContract.State.Concrete.Error) {
-            CustomDialog(
-                title = "네트워크 에러 발생",
-                content = uiState.errorMessage
-            ) {
-                scope.launch {
-                    viewModel.event.send(MyInfoContract.Event.RESET)
+            ButtonDialog(
+                PositiveButton {
+                    scope.launch {
+                        viewModel.event.send(MyInfoContract.Event.RESET)
+                    }
                 }
+
+            ) {
+                Text("네트워크 에러 발생")
+                Text(uiState.errorMessage)
             }
         }
 
         if (uiState.concrete == MyInfoContract.State.Concrete.Success) {
-            CustomDialog(
-                content = "프로필 설정이 완료됐습니다.",
-                title = "설정 완료",
-            ) {
-                scope.launch {
-                    viewModel.event.send(MyInfoContract.Event.RESET)
+            ButtonDialog(
+                PositiveButton {
+                    scope.launch {
+                        viewModel.event.send(MyInfoContract.Event.RESET)
+                    }
                 }
+
+            ) {
+                Text("설정 완료")
+                Text("프로필 설정이 완료됐습니다.")
             }
         }
     }
